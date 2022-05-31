@@ -1,0 +1,53 @@
+/*
+Created by MyFreeTemplates Design Lab
+Authored by Joseph De Araujo
+Font sizes increased slightly by Jim Blythe (11->12, h1:16->18, h2:12->14)
+*/
+
+body,td,p,input,select {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size:12px;
+}
+
+ul {
+    list-style: square inside url('../images/arrow.gif')
+}
+
+.menuLink{
+    color:#FFFFFF;
+    text-decoration:none;
+}
+
+a.menuLink:hover{
+    text-decoration:underline;
+}
+
+h1 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFF;
+}
+
+h2 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #C32020;
+}
+.emp {
+    font-weight: bold;
+    font-size: 14px;
+    color: #C32020;
+}
+
+
+
+.basebg{
+background-color: #666666;
+color:#CCCCCC;
+}
+
+.move{
+margin-left: 2%;
+}
+

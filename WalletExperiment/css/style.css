@@ -1,0 +1,39 @@
+.listedApp{
+	width : 60px;
+	height : 60px;
+	position : absolute;
+	left : 0px;
+}
+.appName {
+	position : absolute;
+	left : 65px;
+	font-size : 10px; 
+}
+img[id^="securityRating"] {
+	position : absolute;
+	left : 65px;
+}
+img[id^="appRating"] {
+	position : absolute;
+	left : 120px;
+}
+.freeOrInstalled {
+	font-family : Arial,sans-serif; 
+	font-size : 13px; 
+	font-weight : 300; 
+	color : #aab428;
+	position : absolute;
+	left : 225px;
+}
+#installarea {
+	position: absolute; 
+	width:100px; 
+	height:30px; 
+	top: 120px; 
+	left: 170px;
+	color: white;
+	font-size : small;
+	text-align : center;
+	padding : 5.5;
+	background-color: #689F38;
+}

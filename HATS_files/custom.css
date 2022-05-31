@@ -1,0 +1,357 @@
+/*
+Ok so this is for adding anything that isn't covered by skeleton, 
+    or for overriding whatever might need to be changed.
+The order here is reset, alignment, general page content, specific page content, media queries
+
+Very few things need major changes, if they do, rethink what you're doing 
+*/
+
+/* Order your rules alphabetically unless there is a good reason to not, if so say why */
+
+
+.merged-four .three.columns {
+    width: 25%;
+}
+
+.merged-five .fifths.columns {
+    width: 20%;
+}
+
+.merged-seven .seventh.columns {
+    width: 14.285%;
+}
+
+.merged-four  .three.columns:not(:last-child),
+.merged-five  .fifths.columns:not(:last-child),
+.merged-seven .seventh.columns:not(:last-child) {
+    border-right: 2px solid #e4e4e4;
+}
+.merged-four .three.columns,
+.merged-five .fifths.columns,
+.merged-seven .seventh.columns {
+    padding-bottom: 2rem;
+    margin: 0;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    margin-bottom: 5rem;
+}
+
+table a {
+    color: inherit;
+}
+
+h2 ~ a {
+    padding-bottom: 1.5rem;
+}
+
+/* Text Alignment not covered in skeleton */
+.left {
+    text-align : left;
+}
+
+.centered {
+    text-align: center;
+}
+.right {
+    text-align: right;
+    padding-right: 5px;
+}
+
+
+/* GENERAL EVERY PAGE FORMATTING */
+.front-page .header > .container {
+    border: 0;
+    padding-bottom: 2rem;
+}
+
+.header {}
+.header > .container {
+    /*border-bottom: 2px solid #e3e3e3;*/
+    padding-bottom: 2rem;
+}
+
+.nav {
+    margin-top: 1rem;
+    padding-bottom: 1.5rem;
+    height: 150px;
+}
+
+.sub-header{
+    margin-top: 40px;
+    margin-bottom: -40px;
+}
+
+.content{
+    width: 960px;
+    margin:0 auto;
+}
+
+.page-content {
+    color: #5A5A5A;
+    padding-top: 1rem;
+}
+
+.page-content h2 {
+    letter-spacing: 1px;
+}
+
+.person p {
+    font-size: 1.6rem;
+    margin-bottom: 0;
+}
+
+.person p ~ p {
+    font-size: 1.5rem;
+}
+
+.header-link,
+.sub-header-link {
+    /*border-width: 0px 1px;
+    border-style: solid;
+    border-color: #A4A4A4 ;
+    border-radius: 25px;*/
+    color: #3C3A83;
+    height: 25px;
+    line-height: 25px;
+    margin-top: 100px;
+    padding-bottom: 1.5rem;
+    text-decoration: none;
+    width: 100%;
+}
+
+.header-link:hover,
+.sub-header-link:hover {
+    background: #e3e3e3;
+    color: #62619B;
+}
+
+.header-link:active,
+.sub-header-link:active {
+    border-color: #949494;
+}
+
+.sub-header-link {
+    margin-top: 2rem;
+}
+
+.team-section {
+    margin-bottom: 5rem;
+}
+
+.team-section img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.team-section p {
+    padding-top: 5px;
+    text-align: center;
+    width: 150px;
+}
+
+.team-member-photo {
+    width: 100%;
+    max-width: 150px;
+    height:150px;
+    max-height: 150px;
+}
+
+.table {
+    margin-bottom: 3rem;
+}
+
+.footer {
+    background-color: #DDDDDD;
+    color: #5A5A5A;
+}
+
+.copyright {
+    font-size: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.bottom .columns {
+    width:25%;
+    margin-left: 0;
+}
+
+.bottom-colors-1,
+.bottom-colors-2,
+.bottom-colors-3,
+.bottom-colors-4 {
+    height:6px;
+}
+
+.bottom-colors-1 { background: #f22613;}
+.bottom-colors-2 { background: #F5AB35;}
+.bottom-colors-3 { background: #2ECC71;}
+.bottom-colors-4 { background: #19B5FE;}
+
+
+/* STUFF THAT IS ONLY ON THE FRONT PAGE ONLY */
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.intro, 
+.team, 
+.contact, 
+.footer,
+.projects {
+    padding-top: 3rem;
+    padding-bottom: 7rem;
+}
+
+.intro, 
+.contact,
+.team {
+    color: #FFFFFF;
+}
+
+.intro {
+    background-color: #009688;
+    margin-top: 0rem;
+}
+
+.projects  {
+    background-color: #FFFFFF;
+    color: #5A5A5A;
+}
+
+.projects img {
+    margin-bottom: 2rem;
+}
+
+.team {
+    background-color: #4074FF;
+}
+
+.team img {
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 950px;
+    max-height: 950px;
+    height: auto;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    //background: url(http://link-to-your/image.jpg) no-repeat;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+
+.home-team ul li {
+    width: 25%;
+}
+
+.contact {
+    background-color: #7C4DFF;
+}
+
+.contact .contact-form .button-primary {
+    background-color: #5290E8;
+    border-color: #5290E8;
+}
+
+.contact .contact-form .button-primary:hover {
+    background-color: #2573E2;
+    border-color: #2573E2;
+}
+
+ul.submenu {
+        display: none;
+}
+
+ul#horizontal-list {
+    //list-style: none;
+    //padding-top: 20px;
+    //display: flex;
+    text-align: justify;
+    min-width: 500px;
+}
+
+
+ul#horizontal-list li {
+    //flex: 0 1 auto; /* Default */
+    //list-style-type: none;
+    //background: #fafafa;
+    background: #e3e3e3;
+    color: #62619B;
+    margin-top: 10px;
+    padding-right: 20px;
+    padding-left: 30px;
+    display: inline-block;
+}
+
+
+/* OTHER FORMATTING TYPE THINGS */
+.publications {}
+a {
+    color: #4074FF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #203A7F;
+    text-decoration: underline;
+}
+
+/* Keeps the copyright from sticking to it when the pages are short */
+.csec-image-and-logo {
+    margin-bottom: 3rem;
+}
+
+p {
+   padding-left: 10px;
+   padding-right: 10px;
+}
+
+a.active {
+   display: block;
+   background: #efefef;
+}
+
+table.project {
+   padding: 20px;
+}
+
+tr.spaceUnder>td {
+  padding-bottom: 2em;
+}
+
+tr.country>td{
+ color:black;
+ text-align:center;
+}
+
+h6.project {
+  line-height: 1em;
+  margin-bottom: 0.5em;
+}
+
+table.pheader {
+   padding: 0px;
+   height: 20px;
+   margin-top: -10px;
+   margin-bottom: 0px;
+   width: 100%;
+}
+
+table.pheader td {
+    text-align: center;
+}
+

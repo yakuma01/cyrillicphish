@@ -1,0 +1,287 @@
+// css
+#menu {
+  margin-left: 100px;
+  width: 960px;
+  height: 40px;
+  clear: both;
+  overflow: auto;
+}
+ 
+ul#menu_nav {
+  float: left;
+  //width: 960px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  //background: #dc0000 url(../img/menu-parent.png) repeat-x;
+  //background: #ded7d7;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;  
+  overflow: auto;
+}
+ 
+ul#menu_nav li {
+  display: inline;
+}
+ 
+ul#menu_nav li a {
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  line-height: 40px;
+  //color: #fff;
+  color: #62619B;
+  text-decoration: none;
+  //text-shadow: 1px 1px 1px #880000;
+  margin: 0;
+  padding: 0 30px;
+  //background: #dc0000 url(../img/menu-parent.png) repeat-x;
+  //background: #ded7d7;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px;     
+}
+
+ 
+/* APPLIES THE menu_active STATE */
+ul#menu_nav .current a, ul#menu_nav li.menu_active > a  {
+  //color: #fff;
+  color: #62619B;
+  text-decoration: none;
+  //text-shadow: 1px 1px 1px #330000;
+  //background: #bb0000;
+  background: #e4e4e4;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px; 
+}
+
+ul#menu_nav .current a, ul#menu_nav li.selected > a  {
+  color: #62619B;
+  text-decoration: none;
+  background: #e4e4e4;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px; 
+}
+
+ul#menu_nav .current a, ul#menu_nav li:hover > a  {
+  //color: #fff;
+  color: #62619B;
+  text-decoration: none;
+  //text-shadow: 1px 1px 1px #330000;
+  //background: #bb0000;
+  background: #ded7d7;
+  -moz-border-radius-topright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -webkit-border-top-left-radius: 10px; 
+}
+ 
+/* THE SUBMENU LIST HIDDEN BY DEFAULT */
+ul#menu_nav  ul {
+  display: none;
+}
+
+.nav a.menu_active {
+  position: float;
+  display: block;
+  margin: 40px 0 0 0;
+  background: #efefef;
+}
+
+ul#menu_nav li.menu_active > ul {
+  position: absolute;
+  display: block;
+  width: 960px;
+  height: 45px;
+  position: absolute;
+  height: 45px;
+  line-height: 45px;
+  margin: 40px 0 0 0;
+  //background: #aa0000 url(../img/menu-child.png) repeat-x;  
+  background: #e4e4e4;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px; 
+}
+ 
+ul#menu_nav li.menu_active > ul li a{
+  //color: #120000;
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  color: #3C3A83;
+  text-decoration: none;
+  text-shadow: none;
+  margin-top: 5px;
+  margin-left: 25px;
+  margin-right: -25px;
+  padding: 0 15px 0 15;
+  background: #e4e4e4;
+}
+
+ul#menu_nav li.menu_active > ul li.selected a{
+  //color: #120000;
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  color: #3C3A83;
+  text-decoration: none;
+  text-shadow: none;
+  margin-top: 5px;
+  margin-left: 25px;
+  padding: 0 15px 0 15;
+  background: #efefef;
+}
+
+/* WHEN THE FIRST LEVEL MENU ITEM IS HOVERED, THE CHILD MENU APPEARS */
+ul#menu_nav li:hover > ul {
+  position: relative;
+  display: block;
+  width: 960px;
+  height: 45px;
+  position: absolute;
+  margin: 40px 0 0 0;
+  //background: #aa0000 url(../img/menu-child.png) repeat-x;  
+  background: #ded7d7;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px; 
+}
+ 
+ 
+ul#menu_nav li:hover > ul li a {
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  line-height: 40px;
+  //color: #fff;
+  color: #62619B;
+  text-decoration: none;
+  //text-shadow: 1px 1px 1px #110000;
+  margin-top: 5px;
+  margin-left: 25px;
+  margin-right: -25px;
+  padding: 0 15px 0 15;
+  //background: #aa0000 url(../img/menu-child.png) repeat-x; 
+  background: #ded7d7;
+}
+ 
+ul#menu_nav li:hover > ul li a:hover {
+  //color: #120000;
+  color: #3C3A83;
+  text-decoration: none;
+  text-shadow: none;
+  background: #e4e4e4;
+}
+
+ul#menu_nav li.extraDropdown > ul.dropdown li.selected a{
+  //color: #120000;
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  color: #3C3A83;
+  text-decoration: none;
+  text-shadow: none;
+  margin-top: 0px;
+  margin-left: 10px;
+  padding: 0 15px 0 15;
+  background: #efefef;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px; 
+}
+
+ul.dropdown{
+    display: none;
+}
+ul#menu_nav li.extraDropdown:hover > ul {
+  position: relative
+  display: block;
+  width: 170px;
+  height: 370px; // +40px
+  position: absolute;
+  margin: 45px 0 0 774px;
+  background: #ded7d7;
+  visibility: visible;
+}
+ 
+ul#menu_nav li.extraDropdown:hover > ul li a {
+  position:relative;
+  float: left;
+  font: bold 1.1em arial,verdana,tahoma,sans-serif;
+  line-height: 40px;
+  //color: #fff;
+  color: #62619B;
+  text-decoration: none;
+  //text-shadow: 1px 1px 1px #110000;
+  width: 150px;
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-right: -25px;
+  padding: 0 15px 0 15;
+  //background: #aa0000 url(../img/menu-child.png) repeat-x; 
+  background: #ded7d7;
+  visibility: visible;
+}
+
+ul#menu_nav li.extraDropdown:hover > ul li a:hover {
+  //color: #120000;
+  color: #3C3A83;
+  text-decoration: none;
+  text-shadow: none;
+  background: #e4e4e4;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -webkit-border-bottom-left-radius: 10px; 
+}
+
+ 
+div.secret {
+    position: absolute;
+    height: 45px;
+    width: 960px;
+    margin-top: 40px;
+    margin-left: 20px;
+    background: white;
+}
+
+div.secret2 {
+    position: absolute;
+    height: 15px;
+    width: 960px;
+    margin-top: 40px;
+    margin-left: 20px;
+    background: white;
+}
+
+/*----------------------------------------------------------------------------------------------------------------*\
+    BASIC RESET - please use a better one in production
+\*----------------------------------------------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------------------------------*\
+    NAV
+\*----------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
+/*----------------------------------------------------------------------------------------------------------------*\
+    MEDIA QUERIES
+\*----------------------------------------------------------------------------------------------------------------*/
