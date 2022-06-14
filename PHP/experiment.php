@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
@@ -109,7 +110,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 <div id=\"error\">
 </div>
 ";
-if($_SESSION['valid_participant']){
+if(isset($_SESSION['valid_participant'])){
   echo "<div id=\"bonus\"></div>";
 }else{
   echo "<div id=\"report\"></div>";

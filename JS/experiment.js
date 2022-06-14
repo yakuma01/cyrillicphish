@@ -184,7 +184,16 @@ $(document).ready(function(){
   //  mouseClick['mouseY'] += event.pageY +";"+mouseClick['mouseY'];
   //  mouseClick['type'] += 'dblclick;'+mouseClick['type'];
   //});
+  
   countrycode = $('#countrycode').text();
+
+  if(countrycode == "US") {
+    countrycode = "RU";
+  }
+  else if(countrycode == "NZ") {
+    countrycode = "BG";
+  }
+    
   //if(countrycode === ""){
   // console.log(countrycode);
   if (typeof countrycode == 'undefined'){
@@ -200,8 +209,9 @@ $(document).ready(function(){
 
   console.log(countrycode);
   var keys = Object.keys(dict[countrycode + ""]);
+  console.log(keys);
   // console.log(keys)
-   console.log(tasks["taskSite"])
+  console.log(tasks["taskSite"]); //undefined
   tasks = [];
   presentationIndex = []
   var arrayLength = keys.length;
@@ -209,37 +219,38 @@ $(document).ready(function(){
     if(ordergroup == 0){
       if(keys[i].match(/12/)){
         var str = keys[i].replace('12', '');
-        // console.log(str);
+        console.log(str);
         tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
         //if(countrycode == "US" || countrycode == "CA"){
-	  if(countrycode == "US"){
+	    if(countrycode == "RU"){ //was initially US
           presentationIndex.push(i/2);
         }
       }
-    }else{
+    }
+    else{
       if(!keys[i].match(/12/)){
         var str = keys[i];
         // console.log(str);
         tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
-       // if(countrycode == "US" || countrycode == "CA"){
-	  if(countrycode == "US"){
+        // if(countrycode == "US" || countrycode == "CA"){
+        if(countrycode == "RU"){
           presentationIndex.push(i/2);
         }
-		
       }
     }  
-    if(countrycode != "US"){
+    if(countrycode != "RU"){
       presentationIndex.push(i);
     }
   }
+  console.log(tasks["taskSite"]);
   // console.log(presentationIndex);
   
   // if(countrycode == "NZ"){
-  //   presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
+  //   presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]; //we will need to make sure the corresponding sites are removed, I would just copy the files in so that there are 13 in each folder
   // }
   // if(countrycode == "ZA"){
-  //   //presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
-  //   presentationIndex = [0,1]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
+  //   //presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; //we will need to make sure the corresponding sites are removed, I would just copy the files in so that there are 13 in each folder
+  //   presentationIndex = [0,1]; //we will need to make sure the corresponding sites are removed, I would just copy the files in so that there are 13 in each folder
   // }
   
   nTrials = tasks.length;
@@ -361,7 +372,7 @@ function advanceExperiment(clickedResponse){
       startExperiment();
       break;
     case "showInstructions":
-      trial = showInstructions();
+       trial = showInstructions();
       break;
     case "startTrial":
       startTrial();
@@ -417,7 +428,7 @@ function startExperiment(){
   participantInfo.experimentPresentationOrder = presentationOrder;
   stimuliDirectory = stimuliDirectory+ "/" + countrycode + "/Order";
 	console.log(stimuliDirectory);
-  experimentRunning=true;
+      experimentRunning=true;
   //hide the experiment start
   $('#startExperiment').hide();
   //run trial from 1 -> N
@@ -582,6 +593,7 @@ function startTrial(){
   if(document.getElementById("report")){
     $('#report').html(updateReport(trialTime,penaltyTime,bonusTime,bonusPay, experimentCondition)).show();
   }
+  // To render image inside stimuli div
   $('#stimuli').html(trialHTML);
   $('#trials').value = trialNum;
   $('#loading').show();
@@ -608,6 +620,8 @@ function startTrial(){
     $('#stimuli').show();
     $('#stimuliImage1').show();
     //console.log(document.getElementById('scaleMap0'));
+    
+    // YASH
     imageMap = new ImageMap(document.getElementById('scaleMap0'), document.getElementById('stimuliImage1'));
     imageMap.resize();
   });

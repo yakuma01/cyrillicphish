@@ -2,16 +2,16 @@
 
 session_start();
 
-if ($_SESSION['country'] === "UK") {
+if (isset($_SESSION['country']) === "UK") {
     $countryID = "370D851E";
 }
-else if ($_SESSION['country'] === "CA") {
+else if (isset($_SESSION['country']) === "CA") {
     $countryID = "EBE48533";
 }
-else if ($_SESSION['country'] === "AU") {
+else if (isset($_SESSION['country']) === "AU") {
     $countryID = "554FF676";
 }
-else if ($_SESSION['country'] === "NZ") {
+else if (isset($_SESSION['country']) === "NZ") {
     $countryID = "392B9C7A";
 }
 else {
@@ -47,8 +47,8 @@ If you have any questions about this study, please do not hesitate to contact us
 </p>
 
 <FORM action="http://app.prolific.co/submissions/complete?cc=<?php echo $countryID ?>" method="POST" id="mturk_form">
-    <input type="hidden" name="assignmentId" value="<?php echo $_SESSION['assignmentId'];?>"/>
-    <input type="hidden" name="bonusPay" value="<?php echo $_SESSION['bonusPay'];?>"/>
+    <input type="hidden" name="assignmentId" value="<?php echo isset($_SESSION['assignmentId']);?>"/>
+    <input type="hidden" name="bonusPay" value="<?php echo isset($_SESSION['bonusPay']);?>"/> 
     <input type="hidden" name="foo" value="bar"/>
 <p>
 <button type="submit" value="Submit">Go back to Prolific</button>

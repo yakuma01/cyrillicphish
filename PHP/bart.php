@@ -21,7 +21,7 @@ foreach($_POST as $k => $v) {
 }
 
 $user = "anonymous";
-if($_SESSION['user'] != ""){
+if(isset($_SESSION['user']) != ""){
     $user = $_SESSION['user'];
 }
 

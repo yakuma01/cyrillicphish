@@ -150,7 +150,7 @@ $_SESSION['sisStart'] = true;
 		else{
 			//echo "<P>Вие бяхте избран като възможен участник, защото приехте поканата ни да участвате в този изследователски проект и българския език ви е роден. Трябва да сте запознати и да имате опит в използването на браузъра Firefox, за да участвате в този проект. Ако не отговаряте на тези квалификации, не приемайте тази задача, тъй като резултатите Ви могат да бъдат отхвърлени. Молим Ви да прочетете този формуляр и да зададете всички въпроси, които имате, преди да се съгласите да участвате в проучването. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</P>";
 		}
-if($_SESSION['valid_participant']){
+if(isset($_SESSION['valid_participant'])){
 ?>
 		<P>Този проект получава финансиране от Националната Фондация на Науката (NSF) (САЩ), "Living in the Internet of Things"</P>
 <?php

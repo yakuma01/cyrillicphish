@@ -156,7 +156,7 @@ function prepExperimentInstructions() {
 
 function runSurvey() {
  var cc = document.getElementById("countrycode").innerText;
-  alert(cc)
+  //alert(cc)
   $("#sis").hide();
   $("#completedquestions").append("<h1>COMPLETED QUESTIONS</h1>");
   setupAllQuestions();

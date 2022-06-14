@@ -41,7 +41,7 @@ font-size:150%;
 
 </head>
 <body>
-      <div id="countrycode"><?= $_SESSION['country']; ?></div>
+          <div id="countrycode"><?= $_SESSION['country']; ?></div>
       <div id="ordergroup"><?= $_SESSION['group']; ?></div>
 <?php
 // if($_SESSION["country"] == ""){
@@ -60,7 +60,7 @@ if($_SESSION['type']=='mturk'){
 		<div id="thisStudy" class="instructions">
 		<center><H2>Какво включва този проект?</H2></center><br>
        ';
-      if($_SESSION['valid_participant']){
+      if(isset($_SESSION['valid_participant'])){
 
    echo 'You will receive $4 for completing these two tasks, but you can earn up to $5 more depending on how quickly you complete the experimental task. As your time on the experimental task increases, your bonus will decrease. You will be able to constantly monitor the elapsed time and bonus payout at the top of the page. Here is a screen shot of the clock that will appear at the top of every page showing elapsed time and bonus payout. The penalty time is explained below. <p>If you manage to take this HIT multiple times <strong>You will only be paid once, for your first attempt. Thus, you are not allowed to take the survey multiple times and refreshing the page will invalidate your result. Please use mouse or touchpad to take the survey. </strong>
 ';
@@ -75,11 +75,11 @@ if($_SESSION['type']=='mturk'){
 				</center>
 		</div>
 		<div id="needToDo" class="instructions" style="display:none;">
-		  <center><H3>Какво трябва да направите?</H3></center><br> Целта на тази задача е да посетите всичките уебсайтове за възможно най-кратко време. Ако уебсайтът изглежда сигурен, <strong>влезте и след това ще продължите към следващия уебсайт</strong>. <br> Ако решите <strong> да не влизате, </strong> защото уебсайтът не изглежда сигурен, тогава не трябва да влизате, а трябва да натиснете върху<strong>Бутон за връщане назад</strong> в лентата с инструменти на браузъра.</span> Вашето изпълнение ще бъде засечено '. ($_SESSION['valid_participant']?'payout':'score') .' и точките ще се определят от това колко време ви е отнело да завършите задачата:
+		  <center><H3>Какво трябва да направите?</H3></center><br> Целта на тази задача е да посетите всичките уебсайтове за възможно най-кратко време. Ако уебсайтът изглежда сигурен, <strong>влезте и след това ще продължите към следващия уебсайт</strong>. <br> Ако решите <strong> да не влизате, </strong> защото уебсайтът не изглежда сигурен, тогава не трябва да влизате, а трябва да натиснете върху<strong>Бутон за връщане назад</strong> в лентата с инструменти на браузъра.</span> Вашето изпълнение ще бъде засечено '. (isset($_SESSION['valid_participant'])?'payout':'score') .' и точките ще се определят от това колко време ви е отнело да завършите задачата:
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -99,12 +99,12 @@ if($_SESSION['type']=='mturk'){
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
 		<p>
-			You will maximize your '. ($_SESSION['valid_participant']?'payout':'score') .' by <strong>responding as quickly and as accurately as possible.</strong> There will be a time penalty of <strong> 15 SECONDS </strong> for an incorrect trial.</p>
+			You will maximize your '. (isset($_SESSION['valid_participant'])?'payout':'score') .' by <strong>responding as quickly and as accurately as possible.</strong> There will be a time penalty of <strong> 15 SECONDS </strong> for an incorrect trial.</p>
 
 		<BUTTON onclick="$(\'#loggingIn\').hide(); $(\'#needToDo\').show();">Previous Instructions</BUTTON>
 		<p>
@@ -163,7 +163,7 @@ if($_SESSION['type']=='mturk'){
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" a7lt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -229,7 +229,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -249,7 +249,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
@@ -318,7 +318,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
        <OL>
@@ -338,7 +338,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
@@ -405,7 +405,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -425,7 +425,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
@@ -491,7 +491,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -511,7 +511,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
@@ -573,7 +573,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -593,7 +593,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
@@ -659,7 +659,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/functionalButtons.png" alt="Functional Buttons" width="60%"></center></p>
+		<img src="../Images/imagesforscreenshots/functionalButtonsCOZ.png" alt="Functional Buttons" width="60%"></center></p>
 		<p>
 		<B>
         <OL>
@@ -679,7 +679,7 @@ else if($_SESSION['type']=='inv') {
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamples.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
 		</center>
 		</p>
 
