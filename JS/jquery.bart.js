@@ -799,7 +799,7 @@
         $.post('dataReceiver.php', $("#surveyResults").serialize());
         $("#sis").hide();
         popup("experiment.php");
-        $("#question").html("<h3>Please leave this window open while completing the site tasks. Closing or reloading this page will invalidate the results and you will not get paid.</h3>").show();
+        $("#question").html("<h3> Пожалуйста не закройте эту страницу пока вы работаете над экспериментом. Обновление или закртитие страницы аннулирует ваш результат.</h3>").show();
         questions = cultureQuestions.concat(skill_questions);
         which_set = "skills";
         break;

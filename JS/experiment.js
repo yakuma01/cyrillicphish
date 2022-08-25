@@ -186,31 +186,40 @@ $(document).ready(function(){
   //});
   
   countrycode = $('#countrycode').text();
-
-  if(countrycode == "US") {
-    countrycode = "RU";
-  }
-  else if(countrycode == "NZ") {
-    countrycode = "BG";
-  }
-    
+  
   //if(countrycode === ""){
-  // console.log(countrycode);
+  
+  console.log(countrycode);
+  
   if (typeof countrycode == 'undefined'){
-      countrycode = "US";
+    countrycode = "US";
   }
+  
   // console.log(countrycode);
+  
   $('#countrycode').hide();
   participantInfo.map = dict[countrycode];
 
   ordergroup = $('#ordergroup').text();
   $('#ordergroup').hide();
 
+  if(countrycode == null || countrycode == "undefined"){
+    countrycode = "US"
+  }
+
+  // Added by Yash
+  if(countrycode == "US") {
+    countrycode = "RU";
+  }
+  else if(countrycode == "NZ") {
+    countrycode = "BG";
+  }
+  // Added by Yash
 
   console.log(countrycode);
-  var keys = Object.keys(dict[countrycode + ""]);
+  console.log(dict[countrycode]);
+  var keys = Object.keys(dict[countrycode]);
   console.log(keys);
-  // console.log(keys)
   console.log(tasks["taskSite"]); //undefined
   tasks = [];
   presentationIndex = []
@@ -219,11 +228,12 @@ $(document).ready(function(){
     if(ordergroup == 0){
       if(keys[i].match(/12/)){
         var str = keys[i].replace('12', '');
+        console.log(i);
         console.log(str);
         tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
         //if(countrycode == "US" || countrycode == "CA"){
-	    if(countrycode == "RU"){ //was initially US
-          presentationIndex.push(i/2);
+	    if(countrycode == "US" || countrycode == "RU" || countrycode == "BG"){ //was initially only US
+          presentationIndex.push(Math.round(i/2));
         }
       }
     }
@@ -233,17 +243,17 @@ $(document).ready(function(){
         // console.log(str);
         tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
         // if(countrycode == "US" || countrycode == "CA"){
-        if(countrycode == "RU"){
-          presentationIndex.push(i/2);
+        if(countrycode == "US" || countrycode == "RU" || countrycode == "BG"){
+          presentationIndex.push(Math.round(i/2));
         }
       }
     }  
-    if(countrycode != "RU"){
+    if(countrycode != "US" || countrycode != "RU" || countrycode != "BG"){
       presentationIndex.push(i);
     }
   }
   console.log(tasks["taskSite"]);
-  // console.log(presentationIndex);
+  console.log(presentationIndex);
   
   // if(countrycode == "NZ"){
   //   presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]; //we will need to make sure the corresponding sites are removed, I would just copy the files in so that there are 13 in each folder
@@ -269,7 +279,7 @@ $(document).ready(function(){
       var posting = $.post('dataReceiver.php', $form.serialize());
 
       posting.done(function(data){
-        if (data.indexOf("Here is a tally of your performance") > -1) {
+        if (data.indexOf("Вот ваши результаты:") > -1) {
           $("#startTrial").remove();
           $("#stimuli").html(data).show();}
       });
@@ -306,16 +316,31 @@ var ImageMap = function(map, img){
   window.onresize = this.resize;
 };
 
+//to find a unique array
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
 //function definitions
 function getRandomSubarray(arr, size) {
-  var shuffled = arr.slice(0), i = arr.length, temp, index;
+  let shuffled = arr.slice(0), i = arr.length, temp, index;
   while (i--) {
-    index = Math.floor((i + 1) * Math.random());
+    // index = Math.round(Math.floor((i + 1) * Math.random()));
+    index = Math.round(Math.floor(size-1 * Math.random()));
     temp = shuffled[index];
     shuffled[index] = shuffled[i];
     shuffled[i] = temp;
   }
-  return shuffled.slice(0, size);
+  let result = [];
+  console.log("shuffled "+shuffled);
+  result = shuffled.filter(onlyUnique);
+  console.log("result "+result);
+  // for (let x = 0; x < result.length; x++){
+  //   result[x] = Math.floor(result[x]/2);
+  // }
+  // result = result.filter(onlyUnique);
+  console.log(result.slice(0, size));
+  return result.slice(0, size);
 }
 
 function startSurvey(){
@@ -420,7 +445,7 @@ function startExperiment(){
   }
   experimentCondition = experimentalConditions[conditionNumber];
   //experimentOrderNumber = getRandomSubarray(taskOrdering,1)[0];
-  experimentOrderNumber = orderingdictionary[ordergroup];
+  experimentOrderNumber = o9
   presentationOrder = getRandomSubarray(presentationIndex,nTrials);
   // console.log(presentationOrder);
   participantInfo.experimentCondition = experimentCondition;
@@ -453,7 +478,7 @@ function showInstructions(){
   mouseClick = {"button":"","time":"","mouseX":"","mouseY":"","type":""};
   //for each trial
   //show instructions
-  var instructionHTML = '<center><strong>Trial '+(trialNum+1)+' of '+nTrials+'</strong><br>When you are ready press the start trial button</center>';
+  var instructionHTML = '<center><strong>Тест '+(trialNum+1)+' из '+nTrials+'</strong><br>Когда вы готовы нажмите на "Начинать эксперимент"</center>';
   $('#stimuli').html(instructionHTML).show();
   //sendPulse(10);
   $('#startTrial').show();
@@ -485,7 +510,7 @@ console.log("Checking tasksite at line 481");
     }
   }
   var task = tasks[participantInfo.experimentPresentationOrder[trialNum]];
-  // console.log(task);
+  console.log(task);
   var trialDifficulty = taskDifficulty[participantInfo.experimentOrderNumber][participantInfo.experimentPresentationOrder[trialNum]];
   // console.log("participantInfo.experimentOrderNumber: " + participantInfo.experimentOrderNumber);
   // console.log("participantInfo.experimentPresentationOrder[trialNum]: " + participantInfo.experimentPresentationOrder[trialNum]);
@@ -493,7 +518,7 @@ console.log("Checking tasksite at line 481");
   var trial = {"difficulty": trialDifficulty, "trialNumber": trialNum,"image":task["taskSite"],"trialCondition":task["condition"],"pages":task["pages"]};
   // Debug 
   //console.log(participantInfo.experimentOrderNumber + ", " + participantInfo.experimentPresentationOrder[trialNum]);
-  // console.log(trial);
+  console.log(trial);
   return(trial);
 }
 
@@ -502,7 +527,7 @@ function updateClockHTML(elapsedTime, elapsedPenaltyTime,totalBonusTime,maxBonus
     return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
   }
   else if (condition == 'Speed') {
-    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Elapsed Time: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
+    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Прошедшее время: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Штрафное время: '+elapsedPenaltyTime.toFixed(2)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
   }
 }
 
@@ -511,7 +536,7 @@ function updateReport(elapsedTime, elapsedPenaltyTime,totalBonusTime,maxBonusPay
     return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td></tr></table></center>');
   }
   else if (condition == 'Speed') {
-    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Elapsed Time: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td></tr></table></center>');
+    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Прошедшее время: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Штрафное время: '+elapsedPenaltyTime.toFixed(2)+'</td></tr></table></center>');
   }
 }
 
@@ -654,13 +679,13 @@ function applyPenalty(response,time, condition){
     initialPenaltyTime = penaltyTime;
     penaltyTime += time;
     $("#stimuli").hide();
-     errorHTML = "<H2>Applying Penalty</H2><p>";
+     errorHTML = "<H2>Применение штрафа</H2><p>";
     switch(response){
       case 0:
-        errorHTML = "<H1>Did Not Log Into a Good Site</H1><p>"+errorHTML;
+        errorHTML = "<H1>Вы переходили в небезопасный сайт.</H1><p>"+errorHTML;
         break;
       case 1:
-        errorHTML = "<H1>Logged Into a Bad Site</H1><p>"+errorHTML;
+        errorHTML = "<H1>Вы переходили в небезопасный сайт.</H1><p>"+errorHTML;
         break;
     }
   }
@@ -673,10 +698,10 @@ function applyPenalty(response,time, condition){
     errorHTML = "";
     switch(response){
       case 0:
-        errorHTML = "<H1>Did Not Log Into a Good Site</H1><p>"+errorHTML;
+        errorHTML = "<H1>Вы переходили в небезопасный сайт.</H1><p>"+errorHTML;
         break;
       case 1:
-        errorHTML = "<H1>Logged Into a Bad Site</H1><p>"+errorHTML;
+        errorHTML = "<H1>Вы переходили в небезопасный сайт.</H1><p>"+errorHTML;
         break;
     }
   }

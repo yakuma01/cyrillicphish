@@ -49,7 +49,7 @@ font-size:150%;
 // }
 
   //mturk
-if($_SESSION['type']=='mturk'){
+if(isset($_SESSION['type'])=='mturk'){
     //tt = 0
     if($_SESSION['tt']==0)
     {
@@ -95,22 +95,22 @@ if($_SESSION['type']=='mturk'){
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx". If you CANNOT find a login button at all, try to find the SIGN IN or SIGN UP buttons. This will work ONLY when the LOGIN button is completely absent.
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
-		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Login Examples</img>
+		<img src="../Images/imagesforscreenshots/loginExamplesCOZ.png" alt "Login Examples" width="60%"><br>Примеры</img>
 		</center>
 		</p>
 
 		<p>
-			You will maximize your '. (isset($_SESSION['valid_participant'])?'payout':'score') .' by <strong>responding as quickly and as accurately as possible.</strong> There will be a time penalty of <strong> 15 SECONDS </strong> for an incorrect trial.</p>
+			Чтобы максимализировать ваши результаты '. (isset($_SESSION['valid_participant'])?'payout':'score') .' ответе быстро <strong>.</strong> Штрафное время будет <strong> 15 СЕКУНД </strong>.</p>
 
-		<BUTTON onclick="$(\'#loggingIn\').hide(); $(\'#needToDo\').show();">Previous Instructions</BUTTON>
+		<BUTTON onclick="$(\'#loggingIn\').hide(); $(\'#needToDo\').show();">Предыдуший инструкции</BUTTON>
 		<p>
-			Before you can begin the experimental task, you must verify that you understand the instructions. Click the <strong>"Check Understanding"</strong> button at the bottom of the page. <strong> Please DO NOT click the BACK or REFRESH buttons at any point in the experiment as it will invalidate the results. </strong> </p>
+			Прежде чем приступить к экспериментальному заданию, вы должны убедиться, что вы поняли инструкции. Пожалуйста, не нажимайте кнопку НАЗАД или ОБНОВИТЬ, так как это действие отменит результаты. Обновление страницы аннулирует ваш результат.</p>
 		<p>
-				<BUTTON id="checkUnderstanding">Check Understanding</BUTTON>
+				<BUTTON id="checkUnderstanding">Понимание инструкций</BUTTON>
 		</p>
 		</div>
 			</DIV>';
@@ -194,7 +194,7 @@ if($_SESSION['type']=='mturk'){
     }
 }
 //inv
-else if($_SESSION['type']=='inv') {
+else if(isset($_SESSION['type'])=='inv') {
 	//TODO: Change instructions here to explain accuracy condition
     //tt = 0
     if($_SESSION['tt']==0)
@@ -245,7 +245,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
@@ -334,7 +334,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
@@ -375,7 +375,7 @@ else if($_SESSION['type']=='inv') {
 		// </p>
 //<p><center><img src="../Images/imagesforscreenshots/screenClock.png" alt="Screen Clock" width="60%"><br>Screen Clock</img></center>	</p>
  //iu
- else if($_SESSION['type']=='iu') {
+ else if(isset($_SESSION['type'])=='iu') {
 	//TODO: Change instructions here to explain accuracy condition
        //tt = 0
        if($_SESSION['tt']==0)
@@ -421,7 +421,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
@@ -507,7 +507,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
@@ -545,7 +545,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 			</DIV>';
        }
-} elseif($_SESSION['type']=='account'){
+} elseif(isset($_SESSION['type'])=='account'){
 	//TODO: Change instructions here to explain accuracy condition
        //tt = 0
        if($_SESSION['tt']==0)
@@ -589,7 +589,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>
@@ -675,7 +675,7 @@ else if($_SESSION['type']=='inv') {
 		</div>
 		<div id="loggingIn" class="instructions" style="display:none;">
 		<p>
-		<center><H3>Logging- or Signing-in to a website:</H3></center><br> All websites do not follow the same conventions for signing- or logging-in. Typically, the sign-in or log-in prompt will be found in the upper right-hand side of the web page. For a few of the websites, you will need to click on a pull-down menu titled "My Account" or something similar beginning with "My xxxxxxx".
+		<center><H3>Logging- or Signing-in to a website:</H3></center><br> Не все веб-сайты следуют одним и тем же соглашениям для входа в систему. Как правило, запрос на вход в систему находится в верхней правой части веб-страницы. Если вы не можете найти кнопку входа, попробуйте найти кнопки РЕГИСТРАЦИЯ. Это будет работать ТОЛЬКО при полном отсутствии кнопки ВХОД.
 		</p>
 		<p>
 		<center>

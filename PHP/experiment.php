@@ -132,15 +132,15 @@ echo "
 <div id=\"stimuli\">
 <div id=\"stimuliImage1\"></div>
 <div id=\"stimuliImage2\"></div>
-<div id=\"ordergroup\">" . $_SESSION['group'] . "</div>
-<div id=\"countrycode\">" . $_SESSION['country'] . "</div>
+<div id=\"ordergroup\">" . isset($_SESSION['group']) . "</div>
+<div id=\"countrycode\">" . isset($_SESSION['country']) . "</div>
 </div>
 </div>
 
 <br>
 
 <a href=\"javascript:advanceExperiment('startTrial')\" id=\"startTrial\"><button type=\"button\">
-Start Trial
+Начинать эксперимент
 </button></a>
 
 

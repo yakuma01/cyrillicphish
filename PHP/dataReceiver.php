@@ -89,7 +89,7 @@ if (array_key_exists('What_is_your_age', $_POST) == TRUE) {
 	}
 } elseif ($foundkey == TRUE) {
     $_POST['participant'] = $_SESSION['participant'];
-    $_POST['valid_participant'] = $_SESSION['valid_participant'];
+    $_POST['valid_participant'] = isset($_SESSION['valid_participant']);
 
     $saveto = dirname(__FILE__)."/results/".$_SESSION['country']."/raw_site_data_".$_SESSION['participant']."_" . $user . "_" .$_SESSION['time'].".json";
 
@@ -112,15 +112,15 @@ if (array_key_exists('What_is_your_age', $_POST) == TRUE) {
         $_SESSION['bonusPay'] = $_POST['bonusPay'];
 
         echo
-        "Here is a tally of your performance:<br>
-        The number of total test websites: $totalTrials<br>
-        You correctly signed-in to $goodSites of $halfTrials secure websites.<br>
-        You correctly declined to signed-in to $badSites of $halfTrials insecure websites.<br>";
-        if($_SESSION['valid_participant']){
+        "Вот ваши результаты:<br>
+        Общее количество тестовых сайтов: $totalTrials<br>
+        Вы правильно переходили в $goodSites из $halfTrials безопасных веб-сайтов.<br>
+        Вы правильно отказались переходить в $badSites из $halfTrials небезопасных сайтов.<br>";
+        if(isset($_SESSION['valid_participant'])){
           echo "<p>In order to receive your bonus of <strong>\$$bonusPay</strong> with the guaranteed compensation of \$2.00 and additional bonus for the balloon experiment, you now need to complete the survey.</p>";
         }
-        echo "<p>Please note that some of the questions are included for quality control, and you will not be approved for payment if you do not pay attention and answer all the questions.</p><br>
-        <BUTTON id=\"startSurvey\" onClick=\"javascript:startSurvey()\">Continue to Survey</BUTTON>";
+        echo "<p>Обратите, пожалуйста, внимание на то, что некоторые вопросы включаются в опросе для обеспечения качества. </p><br>
+        <BUTTON id=\"startSurvey\" onClick=\"javascript:startSurvey()\">Продолжить к эксперименту.</BUTTON>";
     }
 }
 else{

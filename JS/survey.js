@@ -48,7 +48,8 @@ function popup(url) {
 }
 
 $(document).ready(function () {
-
+  alert(participantType);
+  alert(experimentCondition);
   blockTurkForward();
   window.history.forward(-1);
   var experimentCondition = $('#experimentCondition').val();
@@ -198,7 +199,7 @@ function showFinish() {
     if (websites[i].match(/12/)) {
       var str = websites[i].replace('12', '');
       opts.push(str);
-      // console.log(str);
+      console.log(str);
     }
   }
   skill_questions[0].options = opts;
@@ -218,7 +219,7 @@ function showFinish() {
       $.post('dataReceiver.php', $("#surveyResults").serialize());
       $("#sis").hide();
       popup("experiment.php");
-      $("#question").html("<h3>Please leave this window open while completing the site tasks. Closing or reloading this page will invalidate the results and you will not get paid.</h3>").show();
+      $("#question").html("<h3>Пожалуйста не закройте эту страницу пока вы работаете над экспериментом. Обновление или закртитие страницы аннулирует ваш результат.</h3>").show();
       questions = cultureQuestions.concat(skill_questions);
       which_set = "skills";
       break;
@@ -628,7 +629,7 @@ function nextQuestion() {
     //please wait
     console.log("BABO showFinish");
     //$("#question").html("<h2>Survey Complete</h2>");
-    $("#question").html("<h2>Wait for the Experiment to Load</h2>");
+    $("#question").html("<h2>Подождите пока эксперимент загружается</h2>");
     convertCheckboxesToHiddens();
     $("#nextbutton").hide();
     showFinish();
@@ -687,7 +688,7 @@ function nextQuestionBatch() {
   
   console.log("BABO showFinish");
   //$("#question").html("<h2>Survey Complete</h2>");
-  $("#allquestions").html("<h2>Wait for the Experiment to Load</h2>");
+  $("#allquestions").html("<h2>Подождите пока эксперимент загружается</h2>");
   
   convertCheckboxesToHiddens();
   $("#nextbutton").hide();
@@ -902,7 +903,7 @@ function verifyRadio(question, id) {
 	//console.log(selected.length);
   if (selected.length < 1) {
     $('input[name="' + name + '"]', $(id)).addClass('error');
-    $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>');
+    $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>'); //change this
 	
     return false;
   }
@@ -2055,12 +2056,12 @@ var participantValidationQuestions = [
   [
     {
       type: 'radio',
-      question: 'REFRESHING the experiment page will INVALIDATE your results and result in a rejection?',
+      question: 'Обновление страницы аннулирует ваши результаты?',
       options: [
-        'True',
-        'False'
+        'Правильно',
+        'Неправильно'
       ],
-      mustbechecked: 'True',
+      mustbechecked: 'Правильно',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
       response: 'hide'
     },
@@ -2079,42 +2080,42 @@ var participantValidationQuestions = [
 
     {
       type: 'radio',
-      question: 'For the purposes of this study, if you feel the presented website is NOT SECURE, what action should you take?',
+      question: 'Для целей данного исследования, если вы считаете, что представленный веб-сайт НЕ БЕЗОПАСЕН, что вам нужно сделать?',
       options: [
-        'CLOSE the window',
-        'Find the LOGIN button on the simulated page and click it.',
-        'Find the BACK button on the simulated browser and click it.',
-        'RELOAD the experiment',
-        'EXIT your browser'
+        'Закрывать страницу',
+        'Найти и нажать кнопку ВХОД или ВОЙТИ.',
+        'Найти и нажать кнопку НАЗАД.',
+        'Перезагружать проект',
+        'Выходить из браузера.'
       ],
-      mustbechecked: 'Find the BACK button on the simulated browser and click it.',
+      mustbechecked: 'Найти и нажать кнопку НАЗАД.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
       response: 'hide'
     },
 
     {
       type: 'radio',
-      question: 'For the purposes of this study, if you feel the presented website is SECURE, what action should you take?',
+      question: 'Для целей данного исследования, если вы считаете, что представленный веб-сайт БЕЗОПАСЕН, что вам нужно сделать?',
       options: [
-        'CLOSE the window',
-        'Find the LOGIN button on the simulated page and click it.',
-        'Find the BACK button on the simulated browser and click it.',
-        'RELOAD the experiment',
-        'EXIT your browser'
+        'Закрыть страницу',
+        'Найти и нажать кнопку ВХОД или ВОЙТИ.',
+        'Найти и нажать кнопку НАЗАД.',
+        'Перезагружать проект.',
+        'Выходить из браузера.'
       ],
-      mustbechecked: 'Find the LOGIN button on the simulated page and click it.',
+      mustbechecked: 'Найти и нажать кнопку ВХОД или ВОЙТИ.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection',
       response: 'hide'
     },
 
     {
       type: 'radio',
-      question: 'Are you using a mouse (or touchpad) as your input device?',
+      question: 'Вы используете мышь или сенсорную панель?',
       options: [
-        'Yes',
-        'No'
+        'Да',
+        'Нет'
       ],
-      mustbechecked: 'Yes',
+      mustbechecked: 'Да',
       rejecterror: 'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
       response: 'hide'
     }
@@ -2123,23 +2124,23 @@ var participantValidationQuestions = [
   [
     {
       type: 'radio',
-      question: 'REFRESHING the experiment page will INVALIDATE your results and nullify your potential compensation?',
+      question: 'Обновление страницы аннулирует ваши результаты??',
       options: [
-        'True',
-        'False'
+        'Правильно',
+        'Неправильно'
       ],
-      mustbechecked: 'True',
+      mustbechecked: 'Правильно',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
     },
 
     {
       type: 'radio',
-      question: 'Is repeating this study allowable?',
+      question: 'Разрешается ли повторение этого проекта?',
       options: [
-        'No',
-        'Yes'
+        'Нет',
+        'Да'
       ],
-      mustbechecked: 'No',
+      mustbechecked: 'Нет',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
     },
 
