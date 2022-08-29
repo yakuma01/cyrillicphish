@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
@@ -110,7 +109,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://
 <div id=\"error\">
 </div>
 ";
-if(isset($_SESSION['valid_participant'])){
+if($_SESSION['valid_participant']){
   echo "<div id=\"bonus\"></div>";
 }else{
   echo "<div id=\"report\"></div>";
@@ -132,15 +131,15 @@ echo "
 <div id=\"stimuli\">
 <div id=\"stimuliImage1\"></div>
 <div id=\"stimuliImage2\"></div>
-<div id=\"ordergroup\">" . isset($_SESSION['group']) . "</div>
-<div id=\"countrycode\">" . isset($_SESSION['country']) . "</div>
+<div id=\"ordergroup\">" . $_SESSION['group'] . "</div>
+<div id=\"countrycode\">" . $_SESSION['country'] . "</div>
 </div>
 </div>
 
 <br>
 
 <a href=\"javascript:advanceExperiment('startTrial')\" id=\"startTrial\"><button type=\"button\">
-Начинать эксперимент
+Start Trial
 </button></a>
 
 

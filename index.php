@@ -34,7 +34,7 @@ if(isset($_GET['action']) && $_GET['action'] == "updated"){
 
 
 <hr style="height:5px;background-color:gray;">
-<h1 style="color:#800000;text-align:center;">Please Select Your Country</h1>
+<h1 style="color:#800000;text-align:center;">Выберите, пожалуйста, Вашу страну. / Моля, изберете Вашата страна.</h1>
     <section class="intro" style="background-color:white;">
         <div class="container">
             <div class="row">
@@ -47,11 +47,15 @@ if(isset($_GET['action']) && $_GET['action'] == "updated"){
             <div style="background-color:white;"> 
               <table align="center">
                 <tr>
-                  <td><a href="action.php?country=US&typeRadios=mturk&tt=0" title="United States"><img src="Images/US.jpg" height=220px width=220px></a></td>
-                  <td><a href="action.php?country=UK&typeRadios=mturk&tt=0" title="United Kingdom"><img src="Images/UK.jpg" height=220px width=200px></a></td>
-                  <td><a href="action.php?country=AU&typeRadios=mturk&tt=0" title="Australia"><img src="Images/AU.jpg" height=220px width=270px></a></td>
-                  <td><a href="action.php?country=NZ&typeRadios=mturk&tt=0" title="New Zealand"><img src="Images/NZ.jpg" height=220px width=200px></a></td>
-                  <td><a href="action.php?country=CA&typeRadios=mturk&tt=0" title="Canada"><img src="Images/CA.jpg" height=220px width=220px></a></td>
+                  <td><a href="action.php?country=US&typeRadios=mturk&tt=0" title="Russia"><img src="Images/RU.png" height=125px width=175px style="border:1px solid black;"></a></td>
+                  <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                  <td><a href="action.php?country=US&typeRadios=mturk&tt=0" title="Ukraine"><img src="Images/UK.png" height=125px width=175px style="border:1px solid black;"></a></td>
+                  <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                  <td><a href="action.php?country=US&typeRadios=mturk&tt=0" title="Belarus"><img src="Images/BEL.png" height=125px width=175px style="border:1px solid black;"></a></td>
+                  <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                  <td><a href="action.php?country=NZ&typeRadios=mturk&tt=0" title="Bulgaria"><img src="Images/BG.png" height=125px width=175px style="border:1px solid black;"></a></td>
+                  <td></td>
+                  <!-- <td><a href="action.php?country=CA&typeRadios=mturk&tt=0" title="Canada"><img src="Images/CA.jpg" height=220px width=220px></a></td> -->
                 </tr>
                 <tr>
                   <td></td>
@@ -61,11 +65,14 @@ if(isset($_GET['action']) && $_GET['action'] == "updated"){
                   <td></td>
                 </tr>
                 <tr class="country" style="background-color:white;">
-                    <td style="font-weight:bold;">United States</td>
-                    <td style="font-weight:bold;">United Kingdom</td>
-                    <td style="font-weight:bold;">Australia</td>
-                    <td style="font-weight:bold;">New Zealand</td>
-                    <td style="font-weight:bold;">Canada</td>
+                    <td style="font-weight:bold; font-size:20px">Россия</td>
+                    <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                    <td style="font-weight:bold; font-size:20px">Украина</td>
+                    <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                    <td style="font-weight:bold; font-size:20px">Беларусь</td>
+                    <td><img src="Images/filler.jpg" height=100px width=100px></td>
+                    <td style="font-weight:bold; font-size:20px">България</td>
+                    <!--<td style="font-weight:bold;">Canada</td>-->
                 </tr>
               </table>
             </div>
@@ -91,10 +98,10 @@ if(isset($_GET['action']) && $_GET['action'] == "updated"){
    
             <div class="row">
               <div class="container ">
-          <p class="showblock" style="padding: 5px;text-align: center;background-color: white;color: gray;" onclick="showcollab()">Learn about the collaborators</p>
+          <p class="showblock" style="padding: 5px;text-align: center;background-color: white;color: gray;" onclick="showcollab()">Learn about the collaborators /  Узнайте больше о нашей команде. / Разберете повече за нашия отбор. </p>
   <div id="panel" style="padding: 5px;background-color: black;color: white;text-align:center;display: none;">
   <p>L Jean Camp,  Marthie Grobler,   Julian Jang-Jaccard,   Christian Probst, Karen Renaud, Paul Watters</p>
-    <p> DongInn Kim,  Jacob Abbott, Sanchari Das, Andrew Kim, Tim Kelley, Vafa Andalibi, Jayati Dev</p>
+    <p> DongInn Kim,  Jacob Abbott, Sanchari Das, Andrew Kim, Tim Kelley, Vafa Andalibi, Jayati Dev, William Smeal, Yash Kumar</p>
   </div>
                 <div class="twelve columns centered">&copy; 2015-<?php echo date("Y"); ?> <a href="http://usablesecurity.net/">HATS</a>. All Rights Reserved.
                 </div>

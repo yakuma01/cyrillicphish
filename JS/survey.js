@@ -48,8 +48,8 @@ function popup(url) {
 }
 
 $(document).ready(function () {
-  alert(participantType);
-  alert(experimentCondition);
+  // alert(participantType);
+  // alert(experimentCondition);
   blockTurkForward();
   window.history.forward(-1);
   var experimentCondition = $('#experimentCondition').val();
@@ -69,7 +69,7 @@ $(document).ready(function () {
       questions = cultureQuestions.concat(skill_questions);
       which_set = "skills";
       break;
-    case "Log in Not Log in Consent Form": 
+    case "Log in Not Log in Consent Form":
       prepSisAcknowledged();
       console.log(participantType);
       //Yash
@@ -78,7 +78,7 @@ $(document).ready(function () {
       // var paramValue = url.searchParams.get("country");
       // alert(paramValue);
       // www.test.com?filename=test
-      
+
       //End
       // questions = participantQuestions[participantType].concat(PreStudyQuestions);
       if(paramValue == 'US'){
@@ -89,7 +89,6 @@ $(document).ready(function () {
       }
 
       console.log(questions);
-      
 
       which_set = "sis";
       break;
@@ -156,24 +155,15 @@ function prepExperimentInstructions() {
 }
 
 function runSurvey() {
- var cc = document.getElementById("countrycode").innerText;
-  //alert(cc)
+  // alert("assadas");
   $("#sis").hide();
   $("#completedquestions").append("<h1>COMPLETED QUESTIONS</h1>");
   setupAllQuestions();
   // setupQuestion(0);
-  if(cc == 'US'){
-    $("#navigation").html("<hr><button id='nextbutton'>Продолжить</button>");
-  }
-  else if(cc == 'NZ'){
-    $("#navigation").html("<hr><button id='nextbutton'>Продължи</button>");
-  }
-
-  
+  $("#navigation").html("<hr><button id='nextbutton'>Continue</button>");
   $("#nextbutton").click(function () {
     // nextQuestion();
     nextQuestionBatch();
-   
     return false;
   });
 }
@@ -181,16 +171,13 @@ function runSurvey() {
 function showFinish() {
 
   countrycode = $('#countrycode').text();
-  
-  if (countrycode === "US") {
-    countrycode = "RU";
-  }else{
-    countrycode = "BG";
+  if (countrycode === "") {
+    countrycode = "US";
   }
 
   // console.log("countrycode: " + countrycode);
   var websites = Object.keys(dict[countrycode + ""]);
-  
+  // console.log("Websites: " + websites)
   // console.log(tasks["taskSite"])
   opts = [];
   var arrayLength = websites.length;
@@ -199,7 +186,7 @@ function showFinish() {
     if (websites[i].match(/12/)) {
       var str = websites[i].replace('12', '');
       opts.push(str);
-      console.log(str);
+      // console.log(str);
     }
   }
   skill_questions[0].options = opts;
@@ -209,17 +196,14 @@ function showFinish() {
       $("#surveyResults").submit();
       break;
     case 'sis':
-      
-      window.location.href = "https://localhost/globalcognitivesecurity.net/PHP/bart.php";
-      //$("#sis_form").submit();
-      
+      $("#sis_form").submit();
       break;
     case 'validation':
        console.log("HERE");
       $.post('dataReceiver.php', $("#surveyResults").serialize());
       $("#sis").hide();
       popup("experiment.php");
-      $("#question").html("<h3>Пожалуйста не закройте эту страницу пока вы работаете над экспериментом. Обновление или закртитие страницы аннулирует ваш результат.</h3>").show();
+      $("#question").html("<h3>Please leave this window open while completing the site tasks. Closing or reloading this page will invalidate the results and you will not get paid.</h3>").show();
       questions = cultureQuestions.concat(skill_questions);
       which_set = "skills";
       break;
@@ -230,12 +214,11 @@ function showFinish() {
 
 function setupAllQuestions() {
   var q_idx;
-  
   for (q_idx = 0; q_idx < questions.length; q_idx++) {
     let id_name = "question" + q_idx;
     let id = "#" + id_name
     $("#allquestions").append("<DIV id=\"" + id_name + "\" class=\"ease\"></DIV>")
-     
+
 
     window.currentQuestion = q_idx;
     question = questions[q_idx];
@@ -247,7 +230,7 @@ function setupAllQuestions() {
       }
     }
     $(id).hide();
-    $(id).html('<br><h3>[' + (q_idx + 1) + " / " + questions.length + "] " + question.question + '</h3>').show();
+    $(id).html('<br><h3>[' + (q_idx + 1) + " of " + questions.length + "] " + question.question + '</h3>').show();
 
     switch (question.type) {
       case 'checkboxmatrix':
@@ -629,7 +612,7 @@ function nextQuestion() {
     //please wait
     console.log("BABO showFinish");
     //$("#question").html("<h2>Survey Complete</h2>");
-    $("#question").html("<h2>Подождите пока эксперимент загружается</h2>");
+    $("#question").html("<h2>Wait for the Experiment to Load</h2>");
     convertCheckboxesToHiddens();
     $("#nextbutton").hide();
     showFinish();
@@ -642,11 +625,7 @@ function nextQuestion() {
 
 
 function nextQuestionBatch() {
-  let res = verifyAllQuestion();
-  // alert(res);
-  // alert(window.debug);
   if (!verifyAllQuestion() && !window.debug) {
-    // alert("A");
     let err_msg = $("#error").text();
     alert(err_msg);
     if (err_msg.includes("read and understand the instructions")) {
@@ -674,28 +653,25 @@ function nextQuestionBatch() {
   // console.log(responseTimeName);
   $("#allquestions").append('<input type="hidden" name="' + responseTimeName + '" value="' + responseTime + '">');
 
-  window.currentQuestion++;
+  // window.currentQuestion++;
   for (var q_idx = 0; q_idx < window.questions.length; q_idx++) {
     let id = "#question" + q_idx;
     var ref = $(id).contents();
     $("#completedquestions").append(ref);
   }
-
-  if (window.questions.length<=window.currentQuestion){
+  // if (window.questions.length<=window.currentQuestion){
   //submit agreement
   //open sites
   //please wait
-  
   console.log("BABO showFinish");
   //$("#question").html("<h2>Survey Complete</h2>");
-  $("#allquestions").html("<h2>Подождите пока эксперимент загружается</h2>");
-  
+  $("#allquestions").html("<h2>Wait for the Experiment to Load</h2>");
   convertCheckboxesToHiddens();
   $("#nextbutton").hide();
   showFinish();
-  } else {
-      setupQuestion(window.currentQuestion);
-  }
+  // } else {
+  //     setupQuestion(window.currentQuestion);
+  // }
   return false;
 }
 
@@ -758,84 +734,70 @@ function verifyAllQuestion() {
     switch (question.type) {
       case 'checkboxmatrix':
 	if(!verifyCheckboxMatrix(question, id)) {
-		result = false;
-    return result;
+		return false;
 	}
         break;
       case 'checkall':
         if (!verifyCheckAll(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'matrixrank':
         if (!verifyMatrixRank(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'dimensionalrank':
         if (!verifyDimensionalRank(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'freeformint':
         if (!verifyFreeFormInt(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'freeCode':
         if (!verifyFreeCode(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'freeform':
         if (!verifyFreeForm(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'radiowithother':
         if (!verifyRadioWithOther(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'radio':
         if (!verifyRadio(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'radiowithform':
         if (!verifyRadioWithForm(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'agreementscale':
         if (!verifyAgreementScale(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       case 'countrySelect':
         if (!verifyCountrySelect(question, id)) {
-          result = false;
-          return result;
+          return false;
         }
         break;
       default:
         alert('verify: uncrecognized question type ' + question.type);
-        result = false;
-        return result;
+        return false;
     }
   }
-  result = true;
-  return result;
+  return true;
 }
 
 
@@ -903,7 +865,7 @@ function verifyRadio(question, id) {
 	//console.log(selected.length);
   if (selected.length < 1) {
     $('input[name="' + name + '"]', $(id)).addClass('error');
-    $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>'); //change this
+    $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>');
 	
     return false;
   }
@@ -1166,6 +1128,7 @@ function clean(input) {
 function isNumber(num) {
   return !isNaN(parseFloat(num)) && isFinite(num);
 }
+
 
 //Yash
 //mturk questions are indexed at 0, iu questions are indexed at 1, 2 invitation based questions. Time questions are indexed at 0, accuracy questions are indexed at 1.
@@ -2561,7 +2524,7 @@ var skill_questions = [
     question: 'Please rate how familiar you are with the following websites:',
     options: opts,
     rows: opts,
-	  columns: ['Not at all familiar','Slightly familiar','Somewhat familiar','Moderately familiar','Extremely familiar']
+    columns: ['Not at all familiar','Slightly familiar','Somewhat familiar','Moderately familiar','Extremely familiar']
     // options:[
     //   'adcash.com',
     //   'adf.ly',
@@ -2732,25 +2695,25 @@ var skill_questions = [
     ]
   },
   {
-	  type: 'checkboxmatrix',
-	  question: 'To what extent do you agree or disagree with the following:',
-	  columns: ['Strongly disagree', 'Disagree', 'Neither agree nor disagree', 'Agree', 'Strongly agree'],
-	  options: [
-		 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
-		 'Whenever I step away from my computer at home, I lock the screen.',
-		 'Whenever I step away from my computer at work, I lock the screen.',
-		 'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.'
-	]
- 
-   // type: 'radio',
-   // question: 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
-   // options: [
-   //   'Strongly disagree',
-   //   'Disagree',
-   //   'Neither agree nor disagree',
-   //   'Agree',
-   //   'Strongly agree'
-   // ]
+    type: 'checkboxmatrix',
+    question: 'To what extent do you agree or disagree with the following:',
+    columns: ['Strongly disagree', 'Disagree', 'Neither agree nor disagree', 'Agree', 'Strongly agree'],
+    options: [
+      'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
+      'Whenever I step away from my computer at home, I lock the screen.',
+      'Whenever I step away from my computer at work, I lock the screen.',
+      'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.'
+    ]
+
+    // type: 'radio',
+    // question: 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
+    // options: [
+    //   'Strongly disagree',
+    //   'Disagree',
+    //   'Neither agree nor disagree',
+    //   'Agree',
+    //   'Strongly agree'
+    // ]
   },
   //{
   //  type: 'radio',
@@ -2769,12 +2732,12 @@ var skill_questions = [
   //  question: 'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.',
   //  options: [
   //    'Strongly disagree',
-   //   'Disagree',
-   //   'Neither agree nor disagree',
-   //   'Agree',
-   //   'Strongly agree'
+  //   'Disagree',
+  //   'Neither agree nor disagree',
+  //   'Agree',
+  //   'Strongly agree'
   //  ]
- // },
+  // },
 
   {
     type: 'radio',
@@ -2919,29 +2882,29 @@ var skill_questions = [
   // ]
   // },
 
-	 {
-   type:'radio',
-   question:'How likely are you to sign-in into the COVID-19 information website? ',
-   options: [
-   'Not at all likely',
-   'Somewhat unlikely',
-   'May or may not be likely',
-   'Somewhat likely',
-   'Very likely'
-   ]
-   },
-	 {
-   type:'radio',
-  // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
-   question:'Did you spend more or less time on viewing the COVID-19 website when compared to others?',
-   options: [
-   'Less time',
-   'More time',
-   'About the same amount of time',
-   'I do not remember'
-   ]
-   },
-	
+  {
+    type:'radio',
+    question:'How likely are you to sign-in into the COVID-19 information website? ',
+    options: [
+      'Not at all likely',
+      'Somewhat unlikely',
+      'May or may not be likely',
+      'Somewhat likely',
+      'Very likely'
+    ]
+  },
+  {
+    type:'radio',
+    // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
+    question:'Did you spend more or less time on viewing the COVID-19 website when compared to others?',
+    options: [
+      'Less time',
+      'More time',
+      'About the same amount of time',
+      'I do not remember'
+    ]
+  },
+
   // {
   // type:'radio',
   // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
@@ -3034,25 +2997,25 @@ var skill_questions = [
   // },
 
   {
-	  type:'checkboxmatrix',
-	  question: 'Please rate how far you agree or disagree with the following:',
-	  columns: ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree'], 
-	  options: [
-		  'Online companies would be trustworthy in handling my personal purchase preferences',
-		  'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
-		  'In general, it would be risky to give my personal purchase preference information to online companies',
-		  'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
-		  'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
-		  'Select Agree for this question',
-		  'It usually bothers me when online companies ask me for personal information',
-		  'When online companies ask me for personal information, I sometimes think twice before providing it',
-		  'It bothers me to give personal information to so many online companies',
-		  'I\'m concerned that online companies are collecting too much personal information about me',
-		  'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
-		  'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
-		  'Online companies should never sell the personal information in their computer databases to other companies',
-		  'Online companies should never share personal information with other companies unless it has been authorized by the individuals who provided the information'
-		  ]
+    type:'checkboxmatrix',
+    question: 'Please rate how far you agree or disagree with the following:',
+    columns: ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree'],
+    options: [
+      'Online companies would be trustworthy in handling my personal purchase preferences',
+      'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
+      'In general, it would be risky to give my personal purchase preference information to online companies',
+      'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
+      'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
+      'Select Agree for this question',
+      'It usually bothers me when online companies ask me for personal information',
+      'When online companies ask me for personal information, I sometimes think twice before providing it',
+      'It bothers me to give personal information to so many online companies',
+      'I\'m concerned that online companies are collecting too much personal information about me',
+      'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
+      'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
+      'Online companies should never sell the personal information in their computer databases to other companies',
+      'Online companies should never share personal information with other companies unless it has been authorized by the individuals who provided the information'
+    ]
     //type: 'radio',
     //question: 'Online companies would be trustworthy in handling my personal purchase preferences',
     //options: [
@@ -3063,70 +3026,70 @@ var skill_questions = [
     //  '5',
     //  '6',
     //  '7 (Strongly agree)'
-   // ]
+    // ]
   },
-   {
-      type: 'freeform',
-      //question:'What is your Mechanical Turk ID?',
-      question: 'Please enter any feedback or thoughts about the experiment or survey. Enter NA if you do not wish to comment.',
-      response: 'hide',
-    }
+  {
+    type: 'freeform',
+    //question:'What is your Mechanical Turk ID?',
+    question: 'Please enter any feedback or thoughts about the experiment or survey. Enter NA if you do not wish to comment.',
+    response: 'hide',
+  }
 
   //{
   //  type: 'radio',
- //   question: 'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
+  //   question: 'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
   //  options: [
   //    '1 (Strongly disagree)',
   //    '2',
   //    '3',
   //    '4',
- //     '5',
- //     '6',
+  //     '5',
+  //     '6',
   //    '7 (Strongly agree)'
- //   ]
- // },
+  //   ]
+  // },
 
- // {
+  // {
 //    type: 'radio',
 //    question: 'In general, it would be risky to give my personal purchase preference information to online companies',
 //    options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
- //     '6',
- //     '7 (Strongly agree)'
- //   ]
- // },
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
+  //     '6',
+  //     '7 (Strongly agree)'
+  //   ]
+  // },
 
   //{
- //   type: 'radio',
- //   question: 'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
- //   options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
+  //   type: 'radio',
+  //   question: 'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
+  //   options: [
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
 //      '6',
 //      '7 (Strongly agree)'
 //    ]
- // },
+  // },
 
- // {
- //   type: 'radio',
- //   question: 'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
- //   options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
- //     '6',
- //     '7 (Strongly agree)'
- //   ]
- // },
+  // {
+  //   type: 'radio',
+  //   question: 'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
+  //   options: [
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
+  //     '6',
+  //     '7 (Strongly agree)'
+  //   ]
+  // },
 
 //  {
 //    type: 'radio',
@@ -3184,47 +3147,47 @@ var skill_questions = [
 //    ]
 //  },
 
- // {
- //   type: 'radio',
- //   question: 'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
- //   options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
- //     '6',
- //     '7 (Strongly agree)'
- //   ]
- // },
+  // {
+  //   type: 'radio',
+  //   question: 'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
+  //   options: [
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
+  //     '6',
+  //     '7 (Strongly agree)'
+  //   ]
+  // },
 
- // {
- //   type: 'radio',
- //   question: 'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
- //   options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
- //     '6',
- //     '7 (Strongly agree)'
+  // {
+  //   type: 'radio',
+  //   question: 'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
+  //   options: [
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
+  //     '6',
+  //     '7 (Strongly agree)'
   //  ]
- // },
+  // },
 
-	// {
- //   type: 'radio',
- //   question: 'Online companies should never sell the personal information in their computer databases to other companies',
- //   options: [
- //     '1 (Strongly disagree)',
- //     '2',
- //     '3',
- //     '4',
- //     '5',
- //     '6',
- //     '7 (Strongly agree)'
- //   ]
- // },
+  // {
+  //   type: 'radio',
+  //   question: 'Online companies should never sell the personal information in their computer databases to other companies',
+  //   options: [
+  //     '1 (Strongly disagree)',
+  //     '2',
+  //     '3',
+  //     '4',
+  //     '5',
+  //     '6',
+  //     '7 (Strongly agree)'
+  //   ]
+  // },
 
   //{
   //  type: 'radio',
@@ -3237,8 +3200,8 @@ var skill_questions = [
   //    '5',
   //    '6',
   //    '7 (Strongly agree)'
- //   ]
- // }
+  //   ]
+  // }
 ];
 
 // console.log("OPTS: " + opts)
@@ -3273,7 +3236,7 @@ var PreStudyQuestions = [
     //  'more than 80 years'
     //	]
   },
-  
+
   //{
   //	type:'radio',
   //	question: 'Can you read and understand English?',
@@ -3323,12 +3286,12 @@ var PreStudyQuestions = [
   //	    'Over $100,000'
   //	]
   //   },
- // {
+  // {
   //  type: 'radiowithother',
   //  question: 'What is your nation of citizenship?',
-    // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
+  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
   //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
- // },
+  // },
   //{
   //  type:'radiowithother',
   //  question:'In what nation do you currently live?',
@@ -3367,7 +3330,7 @@ var PreStudyQuestions_US = [
     //  'more than 80 years'
     //	]
   },
-  
+
   //{
   //	type:'radio',
   //	question: 'Can you read and understand English?',
@@ -3416,12 +3379,12 @@ var PreStudyQuestions_US = [
   //	    'Over $100,000'
   //	]
   //   },
- // {
+  // {
   //  type: 'radiowithother',
   //  question: 'What is your nation of citizenship?',
-    // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
+  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
   //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
- // },
+  // },
   //{
   //  type:'radiowithother',
   //  question:'In what nation do you currently live?',
@@ -3460,7 +3423,7 @@ var PreStudyQuestions_NZ = [
     //  'Повече от 80 години'
     //	]
   },
-  
+
   //{
   //	type:'radio',
   //	question: 'Can you read and understand English?',
@@ -3488,7 +3451,7 @@ var PreStudyQuestions_NZ = [
     options: [
       '40 или повече часове седмично',
       'По-малко от 40 часове седмично',
-      'Нямам работа и търся работа',  
+      'Нямам работа и търся работа',
       'Нямам работа и не търся работа',
       'Студент съм',
       'Аз се пенсионирах',
@@ -3509,12 +3472,12 @@ var PreStudyQuestions_NZ = [
   //	    'Over $100,000'
   //	]
   //   },
- // {
+  // {
   //  type: 'radiowithother',
   //  question: 'What is your nation of citizenship?',
-    // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
+  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
   //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
- // },
+  // },
   //{
   //  type:'radiowithother',
   //  question:'In what nation do you currently live?',
