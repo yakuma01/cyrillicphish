@@ -4,11 +4,10 @@
 
 var questions;
 var which_set;
-var url = new URL(window.location.href);
-var paramValue = url.searchParams.get("country");
 
 var countrycode;
-var opts;
+var opts=[];
+var queryString = window.location.search;
 
 //function processReload(event){
 
@@ -48,8 +47,7 @@ function popup(url) {
 }
 
 $(document).ready(function () {
-  // alert(participantType);
-  // alert(experimentCondition);
+
   blockTurkForward();
   window.history.forward(-1);
   var experimentCondition = $('#experimentCondition').val();
@@ -71,25 +69,8 @@ $(document).ready(function () {
       break;
     case "Log in Not Log in Consent Form":
       prepSisAcknowledged();
-      console.log(participantType);
-      //Yash
-      var url_string = window.location.href;
-      var url = new URL(url_string);
-      // var paramValue = url.searchParams.get("country");
-      // alert(paramValue);
-      // www.test.com?filename=test
-
-      //End
-      // questions = participantQuestions[participantType].concat(PreStudyQuestions);
-      if(paramValue == 'US'){
-        questions = participantQuestions_US[participantType].concat(PreStudyQuestions_US);
-      }
-      else if(paramValue == 'NZ'){
-        questions = participantQuestions_NZ[participantType].concat(PreStudyQuestions_NZ);
-      }
-
-      console.log(questions);
-
+      //console.log(participantType);
+      questions = participantQuestions[participantType].concat(PreStudyQuestions);
       which_set = "sis";
       break;
     default:
@@ -155,12 +136,20 @@ function prepExperimentInstructions() {
 }
 
 function runSurvey() {
-  // alert("assadas");
   $("#sis").hide();
   $("#completedquestions").append("<h1>COMPLETED QUESTIONS</h1>");
   setupAllQuestions();
   // setupQuestion(0);
-  $("#navigation").html("<hr><button id='nextbutton'>Continue</button>");
+  countrycode = $('#countrycode').text();
+  if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY"){
+    $("#navigation").html("<hr><button id='nextbutton'>Продолжать</button>");
+  }
+  else {
+    $("#navigation").html("<hr><button id='nextbutton'>продължи</button>");
+  }
+  
+  
+  
   $("#nextbutton").click(function () {
     // nextQuestion();
     nextQuestionBatch();
@@ -171,6 +160,7 @@ function runSurvey() {
 function showFinish() {
 
   countrycode = $('#countrycode').text();
+  
   if (countrycode === "") {
     countrycode = "US";
   }
@@ -179,7 +169,7 @@ function showFinish() {
   var websites = Object.keys(dict[countrycode + ""]);
   // console.log("Websites: " + websites)
   // console.log(tasks["taskSite"])
-  opts = [];
+  
   var arrayLength = websites.length;
   // console.log("ArrayLength: " + arrayLength);
   for (var i = 0; i < arrayLength; i++) {
@@ -203,7 +193,13 @@ function showFinish() {
       $.post('dataReceiver.php', $("#surveyResults").serialize());
       $("#sis").hide();
       popup("experiment.php");
-      $("#question").html("<h3>Please leave this window open while completing the site tasks. Closing or reloading this page will invalidate the results and you will not get paid.</h3>").show();
+      if(countrycode == "UA" || countrycode == "RU" || countrycode == "BY"){
+        $("#question").html("<h3>Пожалуйста, не закрывайте страницу во время задач, так как это действие отменит результаты.</h3>").show();
+      }
+      if(countrycode == "BG"){
+        $("#question").html("<h3>Молим Ви не закривайте страницата по време на задачите, че това действие ше анулира резултатите.</h3>").show();
+      }
+      
       questions = cultureQuestions.concat(skill_questions);
       which_set = "skills";
       break;
@@ -213,6 +209,9 @@ function showFinish() {
 }
 
 function setupAllQuestions() {
+  countrycode = document.getElementById("countrycode").innerText;
+ // alert(countrycode);
+  
   var q_idx;
   for (q_idx = 0; q_idx < questions.length; q_idx++) {
     let id_name = "question" + q_idx;
@@ -230,8 +229,13 @@ function setupAllQuestions() {
       }
     }
     $(id).hide();
-    $(id).html('<br><h3>[' + (q_idx + 1) + " of " + questions.length + "] " + question.question + '</h3>').show();
 
+    if(countrycode === 'RU' || countrycode === 'UA' || countrycode === "BY"){
+    $(id).html('<br><h3>[' + (q_idx + 1) + "/" + questions.length + "] " + question.questionRU + '</h3>').show();
+    }
+    if(countrycode === "BG") {
+      $(id).html('<br><h3>[' + (q_idx + 1) + "/" + questions.length + "] " + question.questionBG + '</h3>').show();
+    } 
     switch (question.type) {
       case 'checkboxmatrix':
         buildCheckboxMatrix(question, id);
@@ -255,6 +259,7 @@ function setupAllQuestions() {
         buildFreeForm(question, id);
         break;
       case 'radiowithother':
+        /* No questions of this type in survey */
         buildRadioWithOther(question, id);
         break;
       case 'radio':
@@ -290,8 +295,16 @@ function setupQuestion(question) {
       question.question = question.question_risk;
     }
   }
+
   $("#question").hide();
-  $("#question").html('<h3>' + question.question + '</h3>').show();
+
+  if(countrycode == "RU" || countrycode == "UA" || countrycode == "BY"){
+    $("#question").html('<h3>' + question.questionRU + '</h3>').show(); 
+  }
+  if(countrycode == "BG"){
+    $("#question").html('<h3>' + question.questionBG + '</h3>').show(); 
+  }
+    
 
   switch (question.type) {
     case 'checkboxmatrix':
@@ -375,9 +388,24 @@ function buildAgreementScale(question, id) {
 
 function buildRadio(question, id) {
   var html = '';
-  for (i in question.options) {
-    html += "<input type='radio' name='" + clean(question.question) + "' value='" + clean(question.options[i]) + "'/> " + question.options[i] + '<br>';
-  }
+
+  
+
+  
+    if (countrycode === 'RU' || countrycode === 'UA' || countrycode === 'BY'){
+
+      for (i in question.optionsRU) {
+      html += "<input type='radio' name='" + clean(question.question) + "' value='" + clean(question.options[i]) + "'/> " + question.optionsRU[i] + '<br>';
+      }
+    }
+
+    if(countrycode === "BG"){
+      for (i in question.optionsBG){
+      html += "<input type='radio' name='" + clean(question.question) + "' value='" + clean(question.options[i]) + "'/> " + question.optionsBG[i] + '<br>';
+      }
+    }
+    
+  
   $(id).append(html);
 }
 
@@ -456,39 +484,99 @@ function buildMatrixRank(question, id) {
 }
 
 function buildCheckboxMatrix(question, id) {
+
+
+
  // var html = '<table border="1"><tr><td><i>Information</i></td>';
-var html = '<table border="1"><tr><td><i></i></td>';
-  for (i in question.columns) {
-	 // console.log("goes in this loop");
-    html += '<td style="padding: 5px;"><b>' + question.columns[i] + '</b></td>';
-  }
-  html += '</tr>';
+ var html = '<table border="1"><tr><td></td>'; 
+
+
+  
+
 	// console.log(opts);
-  for (i in question.options) {
-    html += '<tr><td style="padding: 5px;">' + question.options[i] + '</td>';
-	 // console.log("for every row"+question.options[i]);
-    for (j in question.columns) {
-	  //  console.log("for every column"+question.columns[i]);
-      //html += '<td><input type="checkbox" name="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '" value="yes"/></td>';
-	html += '<td><input type="radio" name="' + clean(question.prefix + '_' + question.options[i]) + '" value="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '"/></td>';    
+
+  if(countrycode == "RU" || countrycode == "UA" || countrycode == "BY"){
+
+     
+
+
+    for (i in question.columnsRU) 
+    {
+    html += '<td style="padding: 5px;"><b>' + question.columnsRU[i] + '</b></td>';
     }
     html += '</tr>';
+
+
+    
+
+    for (i in question.optionsRU)  {
+      html += '<tr><td style="padding: 5px;">' + question.optionsRU[i] + '</td>';
+     // console.log("for every row"+question.options[i]);
+      for (j in question.columnsRU) {
+        
+      //  console.log("for every column"+question.columns[i]);
+        //html += '<td><input type="checkbox" name="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '" value="yes"/></td>';
+
+
+      html += '<td><input type="radio" name="' + clean(question.prefix + '_' + question.options[i]) + '" value="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '"/></td>';    
+      }
+      html += '</tr>';
+    }
+
+
   }
+  if(countrycode =="BG")
+  {
+
+    for (i in question.columnsBG) 
+    {
+    html += '<td style="padding: 5px;"><b>' + question.columnsBG[i] + '</b></td>';
+    }
+    html += '</tr>';
+
+
+    for (i in question.optionsBG) {
+      html += '<tr><td style="padding: 5px;">' + question.optionsBG[i] + '</td>'; 
+     // console.log("for every row"+question.options[i]);
+      for (j in question.columnsBG) {
+
+      //  console.log("for every column"+question.columns[i]);
+        //html += '<td><input type="checkbox" name="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '" value="yes"/></td>';
+    html += '<td><input type="radio" name="' + clean(question.prefix + '_' + question.options[i]) + '" value="' + clean(question.prefix + '_' + question.options[i] + '_' + question.columns[j]) + '"/></td>';    
+      }
+      html += '</tr>';
+    }
+
+  }
+  
   html += '</table>';
   $(id).append(html);
 }
 
-var numcheck = 0;
 
+var numcheck = 0;
 function buildCheckAll(question, id) {
   var html = '';
   for (i in question.options) {
 	  numcheck = numcheck + 1; 
 	  if(clean(question.prefix + '_' + question.options[i]) == "undefined_I_do_not_know" || clean(question.prefix + '_' + question.options[i]) == "undefined_I_do_not_know_about_this_certificate" || clean(question.prefix + '_' + question.options[i]) == "undefined_None_of_the_above") {
-	     html += "<input type='radio' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='" + clean(question.options[i]) + "' onchange='radiochangecheckbox(this)'/> " + question.options[i] + '<br>';
+
+      if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY") {
+        html += "<input type='radio' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='" + clean(question.options[i]) + "' onchange='radiochangecheckbox(this)'/> " + question.optionsRU[i] + '<br>';
+      }
+      if(countrycode === "BG"){
+        html += "<input type='radio' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='" + clean(question.options[i]) + "' onchange='radiochangecheckbox(this)'/> " + question.optionsBG[i] + '<br>';
+      }
+	    
 	     }
 	  else {
-    html += "<input type='checkbox' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='yes' onchange='radiochangecheckbox(this)'/> " + question.options[i] + '<br>';
+
+      if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY") {
+    html += "<input type='checkbox' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='yes' onchange='radiochangecheckbox(this)'/> " + question.optionsRU[i] + '<br>';
+      }
+      if(countrycode === "BG"){
+        html += "<input type='checkbox' class ='" + clean(question.question) + "' id='" +numcheck + "' name='" + clean(question.prefix + '_' + question.options[i]) + "' value='yes' onchange='radiochangecheckbox(this)'/> " + question.optionsBG[i] + '<br>';
+      }
    // html += '<input type="checkbox" id="' +numcheck + '" name="' + clean(question.prefix + '_' + question.options[i]) + '" value="yes" onchange="'radiochangecheckbox(this)/>' + question.options[i] + '<br/>';
   	}
   }
@@ -610,7 +698,7 @@ function nextQuestion() {
     //submit agreement
     //open sites
     //please wait
-    console.log("BABO showFinish");
+    //console.log("BABO showFinish");
     //$("#question").html("<h2>Survey Complete</h2>");
     $("#question").html("<h2>Wait for the Experiment to Load</h2>");
     convertCheckboxesToHiddens();
@@ -625,16 +713,19 @@ function nextQuestion() {
 
 
 function nextQuestionBatch() {
+  
   if (!verifyAllQuestion() && !window.debug) {
+    
+    // let err_msg = "Please read and understand the instructions";
+    //alert(err_msg);
     let err_msg = $("#error").text();
-    alert(err_msg);
-    if (err_msg.includes("read and understand the instructions")) {
+    if (err_msg.includes("внимательно прочитали инструкции") || err_msg.includes("можете да прочетете и разберете инструкциите за")) {
       // alert($("#error").text());
       $("#error").hide();
       Swal.fire({
         icon: 'error',
         title: 'Wrong Answer(s)',
-        text: $("#error").text(),
+        text: err_msg,
         showConfirmButton: true,
         // footer: '<a href>Why do I have this issue?</a>'
       }).then((result) => {
@@ -663,9 +754,9 @@ function nextQuestionBatch() {
   //submit agreement
   //open sites
   //please wait
-  console.log("BABO showFinish");
+  //console.log("BABO showFinish");
   //$("#question").html("<h2>Survey Complete</h2>");
-  $("#allquestions").html("<h2>Wait for the Experiment to Load</h2>");
+  //$("#allquestions").html("<h2>Wait for the Experiment to Load</h2>");
   convertCheckboxesToHiddens();
   $("#nextbutton").hide();
   showFinish();
@@ -733,9 +824,9 @@ function verifyAllQuestion() {
     var id = "#question" + q_idx;
     switch (question.type) {
       case 'checkboxmatrix':
-	if(!verifyCheckboxMatrix(question, id)) {
-		return false;
-	}
+	    if(!verifyCheckboxMatrix(question, id)) {
+		    return false;
+	    }
         break;
       case 'checkall':
         if (!verifyCheckAll(question, id)) {
@@ -810,14 +901,25 @@ function hideQuestion(response) {
 }
 
 function verifyCheckAll(question, id) {
+  
   var error = false;
+  
 
   if (typeof question.mustbechecked != 'undefined') {
+    
     for (i in question.mustbechecked) {
       var name = clean(question.prefix + '_' + question.mustbechecked[i]);
+      
       var ischecked = $('input[name="' + name + '"]', $(id)).is(':checked');
       if (!ischecked) {
-        $("#error").html('<h2><font style="color:red;">' + question.rejecterror + '</font></h2>');
+        if(countrycode === 'RU' || countrycode === 'UA' || countrycode === 'BY'){
+          $("#error").html('<h2><font style="color:red;">' + question.rejecterrorRU + '</font></h2>');
+        }
+        if(countrycode === "BG")
+        {
+          $("#error").html('<h2><font style="color:red;">' + question.rejecterrorBG + '</font></h2>');
+        }
+        
         hideQuestion(question.response);
         return false;
       }
@@ -828,7 +930,12 @@ function verifyCheckAll(question, id) {
 	    console.log(name);
 	    console.log(ischecked);
       if (ischecked) {
-        $("#error").html('<h2><font style="color:red;">' + question.rejecterror + '</font></h2>');
+        if(countrycode === 'RU' || countrycode === 'UA' || countrycode === 'BY'){
+          $("#error").html('<h2><font style="color:red;">' + question.rejecterrorRU + '</font></h2>');
+        }
+        else{
+          $("#error").html('<h2><font style="color:red;">' + question.rejecterrorBG + '</font></h2>');
+        }
         hideQuestion(question.response);
         return false;
       }
@@ -865,13 +972,27 @@ function verifyRadio(question, id) {
 	//console.log(selected.length);
   if (selected.length < 1) {
     $('input[name="' + name + '"]', $(id)).addClass('error');
-    $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>');
+    if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY"){
+      $("#error").html('<font style="color:red;"> Пожалуйста, ответьте на вопрос' + q_num + '.</font><hr>');
+    }
+    if(countrycode === "BG"){
+      $("#error").html('<font style="color:red;"> Моля, отговорете на въпрос' + q_num + '.</font><hr>');
+    }
+    
 	
     return false;
   }
   if (typeof question.mustbechecked != 'undefined') {
     if (selected.val() != clean(question.mustbechecked)) {
-      $("#error").html('<h2><font style="color:red;">' + question.rejecterror + '</font></h2>');
+
+      if(countrycode=== "RU" || countrycode === "UA" || countrycode === "BY"){
+        alert(question.rejecterrorRU);
+      $("#error").html('<h2><font style="color:red;">' + question.rejecterrorRU + '</font></h2>');
+      }
+      else{
+        alert(question.rejecterrorBG);
+        $("#error").html('<h2><font style="color:red;">' + question.rejecterrorBG + '</font></h2>');
+      }
       hideQuestion(question.response);
       return false;
     }
@@ -884,20 +1005,30 @@ function verifyCheckboxMatrix(question, id) {
 	var q_num;
 	var name;
 	var selected;
-	for (i in question.options){
+	for (i in question.optionsRU){
+      //alert(i);
   		error = false;
   		q_num = parseInt(id.split("question")[1]) + 1;
-		 console.log(q_num);
-		 console.log(question.options[i]);
+		 //console.log(q_num);
+		 //console.log(question.options[i]);
   		name = clean(question.prefix + '_' + question.options[i]);
-		 console.log(name);
+		  //alert(name);
   		selected = $('input[name="' + name + '"]:checked', $(id));
-		 console.log(selected);
-		 console.log(selected.length);
+      //alert(selected.val());
+      
+      //alert(selected);
+		 //console.log(selected);
+		 //console.log(selected.length);
   		if (selected.length < 1) {
+        //alert(selected);
+        //  alert("SELECTED LESS THAN 1");
     			$('input[name="' + name + '"]', $(id)).addClass('error');
-    			$("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>');
-	
+    			if(countrycode=== "RU" || countrycode === "UA" || countrycode === "BY"){
+            $("#error").html('<font style="color:red;"> Пожалуйста, ответьте на вопрос' + q_num + '.</font><hr>');
+          }
+          else{
+            $("#error").html('<font style="color:red;"> Моля, отговорете на въпрос' + q_num + '.</font><hr>');
+          }
    			return false;
   		}
 	}
@@ -953,7 +1084,12 @@ function verifyFreeForm(question, id) {
   var q_num = parseInt(id.split("question")[1]) + 1;
   var name = clean(question.question);
   var value = $('input[name="' + name + '"]', $(id)).val().trim();
-  $("#error").html('<font style="color:red;">Please answer question ' + q_num + '.</font><hr>');
+  if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY"){
+    $("#error").html('<font style="color:red;"> Пожалуйста, ответьте на вопрос' + q_num + '.</font><hr>');
+  }
+  if(countrycode === "BG"){
+    $("#error").html('<font style="color:red;"> Моля, отговорете на въпрос' + q_num + '.</font><hr>');
+  }
 	
   return (value != '');
 }
@@ -967,7 +1103,15 @@ function verifyFreeFormInt(question, id) {
   if (!isNormalInteger(value)) {
     error = true;
     $('input[name="' + name + '"]', $(id)).addClass('error');
-    $("#error").html('<font style="color:red;">Please answer question ' + q_num + ' with a number.</font><hr>');
+
+    if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY"){
+      $("#error").html('<font style="color:red;"> Пожалуйста, ответьте на вопрос' + q_num + 'цифрой .</font><hr>');
+    }
+    if(countrycode==="BG"){
+      $("#error").html('<font style="color:red;"> Моля, отговорете на въпрос' + q_num + 'с номер .</font><hr>');
+    }
+
+    //$("#error").html('<font style="color:red;">Please answer question ' + q_num + ' with a number.</font><hr>');
 	  
   }
   else {
@@ -975,7 +1119,11 @@ function verifyFreeFormInt(question, id) {
     if (parseInt(value) < question.minimum || parseInt(value) > question.maximum) {
       $('input').remove();
       $('#nextbutton').remove();
-      $("#error").html('<h2><font style="color:red;">' + question.rejecterror + '</font></h2>');
+      if(countrycode=== "RU" || countrycode === "UA" || countrycode === "BY"){
+      $("#error").html('<h2><font style="color:red;">' + question.rejecterrorRU + '</font></h2>');
+      }else{
+        $("#error").html('<h2><font style="color:red;">' + question.rejecterrorBG + '</font></h2>');
+      }
       hideQuestion(question.response);
       return false;
     }
@@ -1052,6 +1200,7 @@ function verifyFreeCode(question, id) {
   }
 
   else {
+    
     $('input[name="' + name + '"]', $(id)).removeClass('error');
     if (parseInt(value) < question.minimum) {
       $('input').remove();
@@ -1130,7 +1279,6 @@ function isNumber(num) {
 }
 
 
-//Yash
 //mturk questions are indexed at 0, iu questions are indexed at 1, 2 invitation based questions. Time questions are indexed at 0, accuracy questions are indexed at 1.
 var participantQuestions = [
   [
@@ -1138,6 +1286,8 @@ var participantQuestions = [
       type: 'freeform',
       //question:'What is your Mechanical Turk ID?',
       question: 'What is your Prolific ID?',
+      questionRU: 'Пишите, пожалуйста, ваш имейл.',
+      questionBG: 'Моля, пишете вашият имейл адрес.',
       response: 'hide',
     },
     // {
@@ -1331,403 +1481,7 @@ var participantQuestions = [
   //]
 ];
 
-var participantQuestions_US = [
-  [
-    {
-      type: 'freeform',
-      //question:'What is your Mechanical Turk ID?',
-      question: 'Пишите, пожалуйста, ваш имейл.',
-      response: 'hide',
-    },
-    // {
-    //     type:'freeformint',
-    //     question:'What is your age?',
-    //     minimum: '18',
-    //    response: 'hide',
-    //     rejecterror:'This study is only for participants age 18 and older. Please return the HIT.'
-    // },
-    // {
-    //   type:'checkall',
-    // question:'What languages can you read and understand?',
-    // prefix:'language',
-    // options:[
-    //    'English',
-    //    'Spanish',
-    //      'Chinese',
-    //      'French',
-    //      'Tagalog',
-    //      'Vietnamese',
-    //      'Hindi',
-    //      'Arabic',
-    //      'Korean',
-    //      'German'
-    //  ],
-    //	response: 'hide',
-    //	mustbechecked:['English'],
-    //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please return the //HIT.'
-    //   }
-    // ,
-    // {
-    //   type:'radio',
-    //   question:'Are you a US Citizen?',
-    //   options:[
-    //     'Yes',
-    //     'No'
-    //   ],
-    //   response: 'hide',
-    //   mustbechecked:'Yes',
-    //   rejecterror:'This study is designed for US Citizens. Please return the HIT.'
 
-    // }
-  ],
-  [
-
-    // {
-    //     type:'freeformint',
-    //     question:'What is your age?',
-    //     minimum: '18',
-    //     response: 'hide',
-    //     rejecterror:'This study is only for participants age 18 and older. Please alert the experimenter.'
-    // },
-    //   {
-    //       type:'checkall',
-    //       question:'What languages can you read and understand?',
-    //      prefix:'language',
-    //       options:[
-    //           'English',
-    //           'Spanish',
-    //           'Chinese',
-    //           'French',
-    //           'Tagalog',
-    //           'Vietnamese',
-    //            'Hindi',
-    //            'Arabic',
-    //            'Korean',
-    //            'German'
-    //        ],
-    //        response: 'hide',
-    //	mustbechecked:['English'],
-    //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please alert the experimenter.'
-    //    },
-    {
-      type: 'radio',
-      question: 'Do you wish to participate in the research? (We will include your anonymized data in our analysis)',
-      options: [
-        'Yes',
-        'No'
-      ],
-      response: 'hide',
-    }
-    /*
-    ,
-         {
-         type:'radio',
-        question:'Are you a US Citizen?',
-        options:[
-          'Yes',
-          'No'
-          ],
-            response: 'hide',
-         }
-    */
-  ]
-
-  //[
-  //    {
-  //       type:'freeCode',
-  //       question:'What is the code provided to you over email? (if multiple codes are entered, it will reject the response)',
-  //   },                      
-
-  //   {
-  //       type:'freeformint',
-  //       question:'What is your age?',
-  //       minimum: '18',
-  //       response: 'hide',
-  //       rejecterror:'This study is only for participants age 18 and older.'
-  //  },
-  //  {
-  //        type:'checkall',
-  //       question:'What languages can you read and understand?',
-  //      prefix:'language',
-  //      options:[
-  //          'English',
-  //        'Spanish',
-  //      'Chinese',
-  //       'French',
-  //       'Tagalog',
-  //       'Vietnamese',
-  //       'Hindi',
-  //        'Arabic',
-  //        'Korean',
-  //       'German'
-  //    ],
-  //     response: 'hide',
-  //	mustbechecked:['English'],
-  //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment.'
-  // }
-  /*
-       ,
-      {
-      type:'radio',
-      question:'Are you a US Citizen?',
-      options:[
-        'Yes',
-        'No'
-        ],
-          response: 'hide',
-          mustbechecked:'Yes',
-          rejecterror:'This study is designed for US Citizens.'
-    }
-  */
-  //],
-
-  //[   
-  //    {
-  //        type:'freeform',
-  //        question:'What is your Mechanical Turk ID?',
-  //        response: 'hide',
-  //    },
-  // {
-  //     type:'freeformint',
-  //     question:'What is your age?',
-  //     minimum: '18',
-  //    response: 'hide',
-  //     rejecterror:'This study is only for participants age 18 and older. Please return the HIT.'
-  // },
-  //   {
-  //        type:'checkall',
-  //        question:'What languages can you read and understand?',
-  //        prefix:'language',
-  //        options:[
-  //            'English',
-  //           'Spanish',
-  //          'Chinese',
-  //            'French',
-  //            'Tagalog',
-  //            'Vietnamese',
-  //            'Hindi',
-  //            'Arabic',
-  //            'Korean',
-  //            'German'
-  //        ],
-  //	response: 'hide',
-  //	mustbechecked:['English'],
-  //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please return the HIT.'
-  //  }
-  // ,
-  // {
-  //   type:'radio',
-  //   question:'Are you a US Citizen?',
-  //   options:[
-  //     'Yes',
-  //     'No'
-  //   ],
-  //   response: 'hide',
-  //   mustbechecked:'Yes',
-  //   rejecterror:'This study is designed for US Citizens. Please return the HIT.'
-
-  // }
-  //]
-];
-
-var participantQuestions_NZ = [
-  [
-    {
-      type: 'freeform',
-      //question:'What is your Mechanical Turk ID?',
-      question: 'Моля, пишете вашият имейл адрес.',
-      response: 'hide',
-    },
-    // {
-    //     type:'freeformint',
-    //     question:'What is your age?',
-    //     minimum: '18',
-    //    response: 'hide',
-    //     rejecterror:'This study is only for participants age 18 and older. Please return the HIT.'
-    // },
-    // {
-    //   type:'checkall',
-    // question:'What languages can you read and understand?',
-    // prefix:'language',
-    // options:[
-    //    'English',
-    //    'Spanish',
-    //      'Chinese',
-    //      'French',
-    //      'Tagalog',
-    //      'Vietnamese',
-    //      'Hindi',
-    //      'Arabic',
-    //      'Korean',
-    //      'German'
-    //  ],
-    //	response: 'hide',
-    //	mustbechecked:['English'],
-    //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please return the //HIT.'
-    //   }
-    // ,
-    // {
-    //   type:'radio',
-    //   question:'Are you a US Citizen?',
-    //   options:[
-    //     'Yes',
-    //     'No'
-    //   ],
-    //   response: 'hide',
-    //   mustbechecked:'Yes',
-    //   rejecterror:'This study is designed for US Citizens. Please return the HIT.'
-
-    // }
-  ],
-  [
-
-    // {
-    //     type:'freeformint',
-    //     question:'What is your age?',
-    //     minimum: '18',
-    //     response: 'hide',
-    //     rejecterror:'This study is only for participants age 18 and older. Please alert the experimenter.'
-    // },
-    //   {
-    //       type:'checkall',
-    //       question:'What languages can you read and understand?',
-    //      prefix:'language',
-    //       options:[
-    //           'English',
-    //           'Spanish',
-    //           'Chinese',
-    //           'French',
-    //           'Tagalog',
-    //           'Vietnamese',
-    //            'Hindi',
-    //            'Arabic',
-    //            'Korean',
-    //            'German'
-    //        ],
-    //        response: 'hide',
-    //	mustbechecked:['English'],
-    //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please alert the experimenter.'
-    //    },
-    {
-      type: 'radio',
-      question: 'Do you wish to participate in the research? (We will include your anonymized data in our analysis)',
-      options: [
-        'Yes',
-        'No'
-      ],
-      response: 'hide',
-    }
-    /*
-    ,
-         {
-         type:'radio',
-        question:'Are you a US Citizen?',
-        options:[
-          'Yes',
-          'No'
-          ],
-            response: 'hide',
-         }
-    */
-  ]
-
-  //[
-  //    {
-  //       type:'freeCode',
-  //       question:'What is the code provided to you over email? (if multiple codes are entered, it will reject the response)',
-  //   },                      
-
-  //   {
-  //       type:'freeformint',
-  //       question:'What is your age?',
-  //       minimum: '18',
-  //       response: 'hide',
-  //       rejecterror:'This study is only for participants age 18 and older.'
-  //  },
-  //  {
-  //        type:'checkall',
-  //       question:'What languages can you read and understand?',
-  //      prefix:'language',
-  //      options:[
-  //          'English',
-  //        'Spanish',
-  //      'Chinese',
-  //       'French',
-  //       'Tagalog',
-  //       'Vietnamese',
-  //       'Hindi',
-  //        'Arabic',
-  //        'Korean',
-  //       'German'
-  //    ],
-  //     response: 'hide',
-  //	mustbechecked:['English'],
-  //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment.'
-  // }
-  /*
-       ,
-      {
-      type:'radio',
-      question:'Are you a US Citizen?',
-      options:[
-        'Yes',
-        'No'
-        ],
-          response: 'hide',
-          mustbechecked:'Yes',
-          rejecterror:'This study is designed for US Citizens.'
-    }
-  */
-  //],
-
-  //[   
-  //    {
-  //        type:'freeform',
-  //        question:'What is your Mechanical Turk ID?',
-  //        response: 'hide',
-  //    },
-  // {
-  //     type:'freeformint',
-  //     question:'What is your age?',
-  //     minimum: '18',
-  //    response: 'hide',
-  //     rejecterror:'This study is only for participants age 18 and older. Please return the HIT.'
-  // },
-  //   {
-  //        type:'checkall',
-  //        question:'What languages can you read and understand?',
-  //        prefix:'language',
-  //        options:[
-  //            'English',
-  //           'Spanish',
-  //          'Chinese',
-  //            'French',
-  //            'Tagalog',
-  //            'Vietnamese',
-  //            'Hindi',
-  //            'Arabic',
-  //            'Korean',
-  //            'German'
-  //        ],
-  //	response: 'hide',
-  //	mustbechecked:['English'],
-  //	rejecterror:'It is important that you be able to read and understand the instructions for this experiment. Please return the HIT.'
-  //  }
-  // ,
-  // {
-  //   type:'radio',
-  //   question:'Are you a US Citizen?',
-  //   options:[
-  //     'Yes',
-  //     'No'
-  //   ],
-  //   response: 'hide',
-  //   mustbechecked:'Yes',
-  //   rejecterror:'This study is designed for US Citizens. Please return the HIT.'
-
-  // }
-  //]
-];
 
 // var usCitizen = [
 //{
@@ -2019,13 +1773,26 @@ var participantValidationQuestions = [
   [
     {
       type: 'radio',
-      question: 'Обновление страницы аннулирует ваши результаты?',
+      question: 'REFRESHING the experiment page will INVALIDATE your results and result in a rejection?',
+      questionRU: 'Обновление страницы аннулирует ваши результаты?',
+      questionBG: 'Обновяването на страницата ще анулира вашите резултати?',
       options: [
+        'True',
+        'False'
+      ],
+      optionsRU:[
         'Правильно',
         'Неправильно'
       ],
-      mustbechecked: 'Правильно',
+      optionsBG:[
+        'Правилно ',
+        'Неправилно'
+
+      ],
+      mustbechecked: 'True',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+      rejecterrorRU:'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
       response: 'hide'
     },
 
@@ -2043,43 +1810,91 @@ var participantValidationQuestions = [
 
     {
       type: 'radio',
-      question: 'Для целей данного исследования, если вы считаете, что представленный веб-сайт НЕ БЕЗОПАСЕН, что вам нужно сделать?',
+      question: 'For the purposes of this study, if you feel the presented website is NOT SECURE, what action should you take?',
+      questionRU: 'Для целей данного исследования, если вы считаете, что представленный веб-сайт НЕ БЕЗОПАСЕН, что вам нужно сделать?',
+      questionBG: 'Ако уебсайтът изглежда несигурен, какво трябва да направите?',
       options: [
+        'CLOSE the window',
+        'Find the LOGIN button on the simulated page and click it.',
+        'Find the BACK button on the simulated browser and click it.',
+        'RELOAD the experiment',
+        'EXIT your browser'
+      ],
+      optionsRU:[
         'Закрывать страницу',
         'Найти и нажать кнопку ВХОД или ВОЙТИ.',
         'Найти и нажать кнопку НАЗАД.',
         'Перезагружать проект',
         'Выходить из браузера.'
       ],
-      mustbechecked: 'Найти и нажать кнопку НАЗАД.',
+      optionsBG: [
+        'Да затворите прозореца',
+        'Да намерите ВХОД/ВЛИЗАНЕ/РЕГИСТРАЦИЯ и влезте.',
+        'Да натиснете върху бутон за връщане назад',
+        'Да заредите страницата отново',
+        'Да затворите браузера'
+      ],
+      mustbechecked: 'Find the BACK button on the simulated browser and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
       response: 'hide'
     },
-
+    
     {
       type: 'radio',
-      question: 'Для целей данного исследования, если вы считаете, что представленный веб-сайт БЕЗОПАСЕН, что вам нужно сделать?',
+      question: 'For the purposes of this study, if you feel the presented website is SECURE, what action should you take?',
+      questionRU:'Для целей данного исследования, если вы считаете, что представленный веб-сайт БЕЗОПАСЕН, что вам нужно сделать?',
+      questionBG:'Ако уебсайтът изглежда сигурен, какво трябва да направите?',
       options: [
+        'CLOSE the window',
+        'Find the LOGIN button on the simulated page and click it.',
+        'Find the BACK button on the simulated browser and click it.',
+        'RELOAD the experiment',
+        'EXIT your browser'
+      ],
+      optionsRU:[
         'Закрыть страницу',
         'Найти и нажать кнопку ВХОД или ВОЙТИ.',
         'Найти и нажать кнопку НАЗАД.',
         'Перезагружать проект.',
         'Выходить из браузера.'
       ],
-      mustbechecked: 'Найти и нажать кнопку ВХОД или ВОЙТИ.',
+      optionsBG: [
+        'Да затворите прозореца',
+        'Да намерите ВХОД/ВЛИЗАНЕ/РЕГИСТРАЦИЯ и влезте.',
+        'Да натиснете върху бутон за връщане назад.',
+        'Да заредите страницата отново',
+        'Да затворите браузера'
+      ],
+      mustbechecked: 'Find the LOGIN button on the simulated page and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
       response: 'hide'
     },
 
     {
       type: 'radio',
-      question: 'Вы используете мышь или сенсорную панель?',
+      question: 'Are you using a mouse (or touchpad) as your input device?',
+      questionRU:'Вы используете мышь или сенсорную панель?',
+      questionBG: 'Използвате ли мишка или тъчпад?',
       options: [
+        'Yes',
+        'No'
+      ],
+      optionsRU:[
         'Да',
         'Нет'
       ],
-      mustbechecked: 'Да',
+      optionsBG:[
+        'Да',
+        'Не'
+      ],
+      mustbechecked: 'Yes',
       rejecterror: 'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
       response: 'hide'
     }
   ],
@@ -2087,24 +1902,29 @@ var participantValidationQuestions = [
   [
     {
       type: 'radio',
-      question: 'Обновление страницы аннулирует ваши результаты??',
+      question: 'REFRESHING the experiment page will INVALIDATE your results and nullify your potential compensation?',
+      
       options: [
-        'Правильно',
-        'Неправильно'
+        'True',
+        'False'
       ],
-      mustbechecked: 'Правильно',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      mustbechecked: 'True',
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.'
     },
 
     {
       type: 'radio',
-      question: 'Разрешается ли повторение этого проекта?',
+      question: 'Is repeating this study allowable?',
       options: [
-        'Нет',
-        'Да'
+        'No',
+        'Yes'
       ],
-      mustbechecked: 'Нет',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      mustbechecked: 'No',
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorBG: 'It is important that you be able to read and understand the instructions for this experiment.'
     },
 
 
@@ -2120,6 +1940,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Find the back button on the simulated browser and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.'
     },
 
     {
@@ -2133,7 +1955,9 @@ var participantValidationQuestions = [
         'Exit your browser'
       ],
       mustbechecked: 'Find the login button on the simulated page and click it.',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
     },
     {
 
@@ -2145,6 +1969,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Yes',
       rejecterror: 'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
+      rejecterrorBG: 'Това изследване изисква използването на мишка или тъчпад като устройство за въвеждане. Моля, върнете, за да избегнете отказ.',
+      rejecterrorRU: 'Это исследование требует использования мыши или сенсорной панели в качестве устройства ввода. Пожалуйста, верните, чтобы избежать отказа.',
       response: 'hide'
     }
   ],
@@ -2157,7 +1983,9 @@ var participantValidationQuestions = [
         'False'
       ],
       mustbechecked: 'True',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.'
     },
 
     {
@@ -2168,7 +1996,9 @@ var participantValidationQuestions = [
         'Yes'
       ],
       mustbechecked: 'No',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU:'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.'
     },
 
 
@@ -2184,6 +2014,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Find the back button on the simulated browser and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.'
     },
 
     {
@@ -2197,7 +2029,9 @@ var participantValidationQuestions = [
         'Exit your browser'
       ],
       mustbechecked: 'Find the login button on the simulated page and click it.',
-      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.'
+      rejecterror: 'It is important that you be able to read and understand the instructions for this experiment.',
+      rejecterrorRU:'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+      rejecterrorBG:'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.'
     },
     {
 
@@ -2209,6 +2043,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Yes',
       rejecterror: 'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
+      rejecterrorBG:'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
+      rejecterrorRU:'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.', 
       response: 'hide'
     }
   ],
@@ -2223,6 +2059,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'True',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
+      rejecterrorRU:'Это исследование требует использования мыши или сенсорной панели в качестве устройства ввода. Пожалуйста, верните, чтобы избежать отказа.',
+      rejecterrorBG: 'Това изследване изисква използването на мишка или тъчпад като устройство за въвеждане. Моля, върнете, за да избегнете отказ.',
       response: 'hide'
     },
 
@@ -2235,6 +2073,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'No',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
+      rejecterrorRU: 'Это исследование требует использования мыши или сенсорной панели в качестве устройства ввода. Пожалуйста, верните, чтобы избежать отказа.',
+      rejecterrorBG: 'Това изследване изисква използването на мишка или тъчпад като устройство за въвеждане. Моля, върнете, за да избегнете отказ.',
       response: 'hide'
     },
 
@@ -2250,6 +2090,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Find the back button on the simulated browser and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection.',
+      rejecterrorBG: 'Това изследване изисква използването на мишка или тъчпад като устройство за въвеждане. Моля, върнете, за да избегнете отказ.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
       response: 'hide'
     },
 
@@ -2265,6 +2107,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Find the login button on the simulated page and click it.',
       rejecterror: 'It is important that you be able to read and understand the instructions for this experiment. Please return to avoid a rejection',
+      rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+      rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
       response: 'hide'
     },
 
@@ -2277,6 +2121,8 @@ var participantValidationQuestions = [
       ],
       mustbechecked: 'Yes',
       rejecterror: 'This study requires the use of a mouse or touchpad as an input device. Please return to avoid a rejection.',
+      rejecterrorBG: 'Това изследване изисква използването на мишка или тъчпад като устройство за въвеждане. Моля, върнете, за да избегнете отказ.',
+      rejecterrorRU: 'Это исследование требует использования мыши или сенсорной панели в качестве устройства ввода. Пожалуйста, верните, чтобы избежать отказа.',
       response: 'hide'
     }
   ]
@@ -2290,6 +2136,8 @@ var validationQuestions = [
       {
         type: 'radio',
         question: 'What is the time penalty for logging into an insecure site?',
+        questionRU:'Сколько будет штрафное время для входа в небезопасный сайт?',
+        questionBG:'Колко време ще загубите за влизане в несигурен сайт?',
         options: [
           '5 seconds',
           '10 seconds',
@@ -2298,8 +2146,26 @@ var validationQuestions = [
           '25 seconds',
           '30 seconds'
         ],
+        optionsRU:[
+          '5 секунд',
+          '10 секунд',
+          '15 секунд',
+          '20 секунд',
+          '25 секунд',
+          '30 секунд'
+        ],
+        optionsBG:[
+          '5 секунди',
+          '10 секунди',
+          '15 секунди',
+          '20 секунди',
+          '25 секунди',
+          '30 секунди'
+        ],
         mustbechecked: '15 seconds',
         rejecterror: 'It is important that you understand the instructions for this experiment. Please return to avoid a rejection',
+        rejecterrorBG:'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+        rejecterrorRU:'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
         response: 'hide'
       }
     ],
@@ -2317,6 +2183,8 @@ var validationQuestions = [
         ],
         mustbechecked: '$0.67',
         rejecterror: 'It is important that you understand the instructions for this experiment. Please return to avoid a rejection',
+        rejecterrorBG:'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.',
+        rejecterrorRU:'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
         response: 'hide'
       }
     ]
@@ -2336,6 +2204,8 @@ var validationQuestions = [
         ],
         mustbechecked: '15 seconds',
         rejecterror: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorRU: 'Важно, чтобы вы внимательно прочитали инструкции для эксперимента. Пожалуйста, верните, чтобы снова прочитать инструкции.',
+        rejecterrorBG: 'Важно е да можете да прочетете и разберете инструкциите за експеримента. Моля, върнете, за да прочетете инструкците отново.'
       }
     ],
 
@@ -2353,6 +2223,8 @@ var validationQuestions = [
         ],
         mustbechecked: '$0.67',
         rejecterror: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorBG: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorRU: 'It is important that you understand the instructions for this experiment.',
 
       }
     ]
@@ -2372,6 +2244,8 @@ var validationQuestions = [
         ],
         mustbechecked: '15 seconds',
         rejecterror: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorBG: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorRU: 'It is important that you understand the instructions for this experiment.',
         response: 'hide'
       }
     ],
@@ -2389,6 +2263,8 @@ var validationQuestions = [
         ],
         mustbechecked: '$0.67',
         rejecterror: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorBG: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorRU: 'It is important that you understand the instructions for this experiment.',
         response: 'hide'
       }
     ]
@@ -2408,6 +2284,8 @@ var validationQuestions = [
         ],
         mustbechecked: '15 seconds',
         rejecterror: 'It is important that you understand the instructions for this experiment. Please return to avoid a rejection',
+        rejecterrorBG: 'It is important that you understand the instructions for this experiment.',
+        rejecterrorRU: 'It is important that you understand the instructions for this experiment.',
         response: 'hide'
       }
     ],
@@ -2436,6 +2314,18 @@ var cultureQuestions = [
   {
     type: 'radio',
     question: 'Which gender do you most identify with?',
+    questionRU: 'Укажите Вас пол',
+    questionBG: 'Изберете Ваш пол',
+    optionsRU:[
+      'Мужской',
+      'Женской',
+      'Я предпочитаю не ответить'
+    ],
+    optionsBG:[
+      'Mъж',
+      'Жена',
+      'Предпочитам да не споделя тази информация'
+    ],
     options: [
       'Male',
       'Female',
@@ -2443,11 +2333,15 @@ var cultureQuestions = [
       'Do not wish to specify'
     ]
   },
-  //{
+  // {
   //    type:'radiowithother',
   //    question:'What is your gender?',
-  //    options:['Male','Female', 'Do not wish to answer']
-  //}
+  //    questionRU:'What is your gender?',
+  //    questionBG: 'What is your gender?',
+  //    options:['Male','Female', 'Do not wish to answer'],
+  //    optionsRU:['Male','Female', 'Do not wish to answer'],
+  //    optionsBG: ['Male','Female', 'Do not wish to answer']
+  // }
   //    ,
   //    {
   //        type:'checkall',
@@ -2465,7 +2359,6 @@ var cultureQuestions = [
   //		]
   //    }
 ];
-
 /*,
 
 	{
@@ -2522,9 +2415,15 @@ var skill_questions = [
     //scale: '5',
     //def: '0',
     question: 'Please rate how familiar you are with the following websites:',
+    questionRU:'Оцените, пожалуйста, насколько Вы знакомы следующими сайтами:',
+    questionBG:'Колко сте запознат със следващите сайтове?',
     options: opts,
+    optionsRU: opts,
+    optionsBG: opts,
     rows: opts,
-    columns: ['Not at all familiar','Slightly familiar','Somewhat familiar','Moderately familiar','Extremely familiar']
+	  columns: ['Not at all familiar','Slightly familiar','Somewhat familiar','Moderately familiar','Extremely familiar'],
+    columnsRU: ['вообще не знаком(а)','немного знаком(а)','довольно знаком(а)','знаком(а)','Очень хорошо знаком(а)'],
+    columnsBG:['Въобще не запознат','Не съвсем запознат','Донякъде запознат','Съвсем запознат','Много добре запознат'],
     // options:[
     //   'adcash.com',
     //   'adf.ly',
@@ -2557,6 +2456,25 @@ var skill_questions = [
   {
     type: 'checkall',
     question: 'What is phishing? (Please check all that apply)',
+    questionRU:'Что такое фишинг? (Выбирайте все подходящие ответы.)',
+    questionBG: 'Какво е фишинг? (Изберете всички подходящи отговори)',
+    optionsRU:[ 'Выдавать себя за кого-то или компанию, чтобы украсть информацию о пользователях.',
+      'Создание поддельного веб-сайта, который выглядит безопасным для кражи информации о пользователях',
+      'Рассылка спам-писем, чтобы обманывать кого-либо в интернете.',
+      'Другие способы кражи информации.',
+      'Наблюдение посещения сайтов в интернете с целью создания реклам.',
+      'Вид интернет мошеничества, целую которого является получение доступа к конфиденциальным данным пользователей логинам и паролем.',
+      'Я не знаю'],
+    optionsBG: [
+      'Фалшиво представяне на човек или компания за кражба на потребителска информация',
+      'Фалшив сайт направен за кражба на потребителска информация',
+      'Изпращането на спам',
+      'Други способи на кражба на информация',
+      'компютер хакове',
+      'Наблюдение на интернет история за изпращането на реклами ',
+      'Не знам'
+    ],
+    
     options: [
       'Pretending to be someone or a company to steal user information',
       'Making a fake website that looks legitimate to steal user information',
@@ -2572,6 +2490,24 @@ var skill_questions = [
     type: 'checkall',
     //  question:'What is the purpose of an X.509 certificate?',
     question: 'What is the purpose of an X.509 certificate for websites? (Please check all that apply)',
+    questionRU: 'Какова цель сертификата X.509 для интернет страницы? (Выбирайте все подходящие ответы.)',
+    questionBG: 'Какво е целта на сертификат X.509? (Изберете всички подходящи отговори)',
+    optionsRU:[
+      'Обеспечивает шифрование',
+      'Обеспечивает защиту информации',
+      'Показывает действительность и регистрацию веб-сайта',
+      'Активная защита от киберпреступности и хакеров',
+      'Показывает надежность сайта и защиту конфиденциальности',
+      'Я ничего не знаю об этом сертификате'
+    ],
+    optionsBG:[
+      'Предоставя криптиране',
+      'Защитава информация',
+      'Показва, че сайтът е регистриран и валиден',
+      'Защитава от хакове и други киберпристъпления',
+      'Показва, че сайтът е надежден и има подходяща защита на поверителността',
+      'Не знам'
+    ],
     options: [
       'Provides encryption',
       'Protects information',
@@ -2586,6 +2522,23 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'SQL injection is a technique to:',
+    questionRU:'SQL инъекция – это метод для',
+    questionBG:'Инжекция SQL се използва за:',
+    optionsRU:[
+      'Внедрение вируса в базу данных',
+      'Внедрение исправлений безопасности в базе данных в ответ на обнаружение новых угроз',
+      'Внедрение сообщений, которые проверяют целостность базы данных ',
+      'Внедрение вредоносного кода в базу данных через веб сайт.',
+      'Я не знаю'
+    ],
+    optionsBG:[
+      'Инжектиране на злонамерен вирус в машината SQL на база данни',
+      'Инжектиране на корекция за сигурност в SQL машината на базата данни в отговор на откриването на нови заплахи',
+      'Инжектиране на изявление, което проверява целостта на базата данни чрез уебсайт',
+      'Inject root user privileges to a regular user without using the graphical user interface (GUI) of the database',
+      'Инжектиране на злонамерено съобщение в база данни чрез уеб страница',
+      'Не знам'
+    ],
     options: [
       'Inject a malicious virus to the database SQL engine',
       'Inject a security patch to the database SQL engine in response to the discovery of new threats',
@@ -2600,6 +2553,24 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'The difference between a passive and reactive Intrusion Detection System is?',
+    questionRU:'В чем разница между пассивной и активной системой обнаружения несанкционированного дуступа?',
+    questionBG: 'Каква е разликата между пасивна и реактивна система за откриване на проникване (Intrusion Detection System)?',
+    optionsRU:[
+      'Пассивная система обнаружения – аппаратное обеспечение а активная система – программное обеспечение',
+      'Пассивная система обнаружения только уведомляет о вредоносных кодах а активная система может отвечать, присылая вредоносные коды атакующим',
+      'Нет разницы, просто разные фирменные наименования',
+      'Пассивная система обнаружения формирует часть межсетевого экрана а активная – отдельный компонент',
+      'Активная система обнаружения может перепрограммировать межсетевой экран а пассивная система не может',
+      'Я не знаю'
+    ],
+    optionsBG:[
+      'Пасивната система се базира на софтуер (програмно обезпечение) и реактивната система се базира на хардуер (техника).',
+      'Пасивната система изпраща само уведомления докато реактивната систама може да изпрати злонамерен код на нападатела.',
+      'Няма разлика. Те са просто отделни марки.',
+      'Пасивната система се включва в защитна стена докато реактивната система е самостоятелен компонент на мрежата.',
+      'Реактивната система може да препрограмира защитната стена, а пасивната система не може.',
+      'Аз не знам'
+    ],
     options: [
       'Passive IDS is software based and reactive is hardware based',
       'Passive IDS provides only alerts and reactive IDS can retaliate by sending malicious code to the attacker',
@@ -2612,6 +2583,23 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'Without any other changes in the default settings of a web server, what can be the motivation to close port 80?',
+    questionRU:'Без каких-либо других изменений в настройках веб-сервера, какая может быть мотивация для закрытия порта 80?',
+    questionBG:'Без никакви промени в настройките на уеб сервера, какво може да бъде мотивациата да се затвори порта 80?',
+    optionsRU:[
+      'Заблокировать входящий запрос XMLhttp',
+      'Заблокировать протокол передачи файлов',
+      'Заблокировать протокол передачи гипертекста',
+      'Заблокировать входящие и исходящие запросы от клиентов',
+      'Заблокировать безопасный демон протокола передачи гипертекста',
+      'Я не знаю'
+    ],
+    optionsBG:[
+      'За да блокира заявка XMLhttp.',
+      'За да блокира протокола на прехвърлянето на файла daemon.',
+      'За да блокира протокола на прехвърлянето на гипертехт daemon',
+      'За да блокира входящи и изходящи заявки от клиенти SMB/CIFS.',
+      'Аз не знам.'
+    ],
     options: [
       'Block incoming XMLhttp Request',
       'Block File Transfer Protocol daemon',
@@ -2625,6 +2613,22 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'How many computer programming languages do you know (not including HTML)?',
+    questionRU:'Сколько компьютерных языков Вы знаете? (не включая HTML)?',
+    questionBG:'Колко компютерни езици знаете? (без да включвате HTML)?',
+    optionsRU:[
+      'Больше чем 10',
+      '6-10',
+      '2-5',
+      '1',
+      'Никаких'
+    ],
+    optionsBG:[
+      'Повече от 10',
+      '6-10',
+      '2-5',
+      '1',
+      'Никакви'
+    ],
     options: [
       'More than 10',
       '6-10',
@@ -2636,6 +2640,22 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'How many years of working experience do you have in network operation and security?',
+    questionRU:'Есть ли у Вас опыт в области сетевых операций и сетевой безопасности?',
+    questionBG:'Колко години опита имате в сферата на мрежова сигурност?',
+    optionsRU:[
+      'Более 10 лет',
+      '6-10 лет',
+      '1-5 лет',
+      'Меньше одного года',
+      'У меня нет опыта в этой сфере'
+    ],
+    optionsBG:[
+      'Повече от 10 години',
+      '6-10 години',
+      '1-5 годинии',
+      'По-малко от една година',
+      'Нямам опит в тази сфера'
+    ],
     options: [
       'More than 10 years',
       '6-10 years',
@@ -2647,6 +2667,22 @@ var skill_questions = [
   {
     type: 'radio',
     question: 'On average, how many times do you have to deal with computer security related problems?',
+    questionRU:'Как часто Вам приходится иметь дел с проблемами связанными с компьютерной безопасностью?',
+    optionsRU:[
+      'Несколько раз каждый день',
+      '1 раз в день',
+      '1 раз в неделью',
+      '1 раз в месяц',
+      '1 раз в год (или меньше)'
+    ],
+    questionBG:'По принцип колко пъти трябва да се справяте с проблеми свързани с компютерна сигурност?',
+    optionsBG:[
+      'Няколко пъти на ден',
+      'Един път в ден',
+      'Един път в седмица',
+      'Един път в месец',
+      'Един път в година (или по-малко)'
+    ],
     options: [
       'Several times every day',
       'Once a day',
@@ -2658,6 +2694,24 @@ var skill_questions = [
   {
     type: 'checkall',
     question: 'What information and network security tools do you use regularly? (Please check all that apply)',
+    questionRU:'Какие информации и инструменты сетевой безопасности вы регулярно используете? (выбрать все подходящие ответы)',
+    optionsRU:[
+      'Межсетовой экран',
+      'Антивирусная программа',
+      'Система обнаружения вторжений',
+      'Безопасная оболочка (SSH)',
+      'Pretty Good Privacy (PGP)',
+      'Система контроля и управления доступом'
+    ],
+    questionBG:'Какви инструменти за мрежова сигурност Вие регуларно използвате? (Може да изберете няколко варианти)',
+    optionsBG:[
+      'Защитна стена',
+      'Антивирусна система',
+      'Система за откриване на проникване (Intrusion Detection System)',
+      'Сигурна Обвивка (Secure Shell (SSH))',
+      'Pretty Good Privacy (PGP)',
+      'Система за контрол на достъпа (Access control (AC))'
+    ],
     options: [
       'Firewall',
       'Anti-virus',
@@ -2670,6 +2724,28 @@ var skill_questions = [
   {
     type: 'checkall',
     question: 'Have you ever (Please check all that apply)',
+    questionRU:'Вы когда-нибудь (пожалуйста, отметьте все подходящие варианты)',
+    questionBG:'Моля, изберете всичките варианти на които можете да отговорете "да',
+    optionsRU:[
+      'Вы когда-нибудь проектировали веб-сайт?',
+      'Вы когда-нибудь регистрировали доменное имя?',
+      'Вы когда-нибудь использовали SSH?',
+      'Вы когда-нибудь настраивали межсетевой экран?',
+      'Вы когда-нибудь создавали базу данных?',
+      'Вы когда-нибудь устанавливали компьютерную программу?',
+      'Вы когда-нибудь писали компьютерную программу?',
+      'Никакого из этих вариантов',
+    ],
+    optionsBG:[
+      'Проектирали ли сте някога уебсайт?',
+      'Регистрирали ли сте някога име на домейн?',
+      'Използвали ли сте някога Сигурна Обвивка (SSH)?',
+      'Конфигурирали ли сте някога защитна стена?',
+      'Создали ли сте някога база данни? a database',
+      'Инсталировали ли сте някога компютерна програма?',
+      'Написали ли сте някога компютерна програма?',
+      'Направили ли сте нито един от варианти, показани в този списък?',
+    ],
     options: [
       'Designed a website',
       'Registered a domain name',
@@ -2684,6 +2760,26 @@ var skill_questions = [
   {
     type: 'checkall',
     question: 'Which of the following indicators do you use to decide if it is safe to enter your username and password on a particular website? (Please check all that apply)',
+    questionRU:'Какие из следующих указателей Вы ищете, чтобы понять, безопасно ли будет переходить в определённый сайт? (пожалуйста, отметьте все подходящие варианты)',
+    optionsRU:[
+      'https',
+      'изображение замка',
+      'сертификат',
+      'сообщение о небезопасности страницы',
+      'вид вебнсайта',
+      'профессионально выглядящий сайт',
+      'другие'
+    ],
+    questionBG:'Кои от следващите показатели Вие използвате за да решите дали е безопасно да въведеш паролата Ви в определен сайт? (Изберете всички подходящи отговори)',
+    optionsBG:[
+      'https',
+      'Изображение на ключалка',
+      'Сертификат',
+      'Съобщения за поверителност',
+      'Вид на уеб-сайт',
+      'Професионална външност на уеб-сайта',
+      'Други показатели'
+    ],
     options: [
       'https',
       'lock icon on the page',
@@ -2695,25 +2791,37 @@ var skill_questions = [
     ]
   },
   {
-    type: 'checkboxmatrix',
-    question: 'To what extent do you agree or disagree with the following:',
-    columns: ['Strongly disagree', 'Disagree', 'Neither agree nor disagree', 'Agree', 'Strongly agree'],
-    options: [
-      'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
-      'Whenever I step away from my computer at home, I lock the screen.',
-      'Whenever I step away from my computer at work, I lock the screen.',
-      'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.'
-    ]
-
-    // type: 'radio',
-    // question: 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
-    // options: [
-    //   'Strongly disagree',
-    //   'Disagree',
-    //   'Neither agree nor disagree',
-    //   'Agree',
-    //   'Strongly agree'
-    // ]
+	  type: 'checkboxmatrix',
+	  question: 'To what extent do you agree or disagree with the following:',
+    questionRU:'В какой степени вы согласны или не согласны со следующими утверждениями:',
+    optionsRU:[ 'Мой телефон или планшет доступнен для всех, без ввода пароля или пинкод.',
+    'Каждый раз, когда я дома отхожу от компьютера, я блокирую экран.',
+    'Каждый раз, когда я на работе отхожу от компьютера, я блокирую экран.',
+    'Вместо выхода из страницы я просматриваю другие сайты или просто закрываю страницу.'],
+	  columns: ['Strongly disagree', 'Disagree', 'Neither agree nor disagree', 'Agree', 'Strongly agree'],
+    columnsRU:['безусловно несогласен(а)', 'не согласен(а)', 'Трудно сказать', 'согласен(а)', 'безусловно согласен(а)'],
+    questionBG:'До каква степен Вие съсласни със следващите изречения:',
+    columnsBG:['Напълно несъгласен', 'Несъгласен', 'Безразличен', 'Съгласен', 'Напълно съгласен'],
+    optionsBG:[ 'Някой може да има достъп до моят телефон или таблет без да трябва да въведе ПИН или парола.',
+    'Когато отстъпвам от компютера си вкъщи, аз винаги заключвам екрана.',
+    'Когато отстъпвам от компютера си на работа, аз винаги заключвам екрана.',
+    'Вместо да излизам от уеб-сайтове, аз сърфирам други страници и просто затварям прозореца когато вече не сърфирам.'],
+	  options: [  
+		 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
+		 'Whenever I step away from my computer at home, I lock the screen.',
+		 'Whenever I step away from my computer at work, I lock the screen.',
+		 'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.'
+	]
+ 
+   // type: 'radio',
+   // question: 'Anyone can access my smartphone or tablet without needing a PIN or passcode.',
+   // options: [
+   //   'Strongly disagree',
+   //   'Disagree',
+   //   'Neither agree nor disagree',
+   //   'Agree',
+   //   'Strongly agree'
+   // ]
   },
   //{
   //  type: 'radio',
@@ -2732,17 +2840,33 @@ var skill_questions = [
   //  question: 'Rather than logging out of websites, I usually just navigate elsewhere or close the window when am done.',
   //  options: [
   //    'Strongly disagree',
-  //   'Disagree',
-  //   'Neither agree nor disagree',
-  //   'Agree',
-  //   'Strongly agree'
+   //   'Disagree',
+   //   'Neither agree nor disagree',
+   //   'Agree',
+   //   'Strongly agree'
   //  ]
-  // },
+ // },
 
   {
     type: 'radio',
     //  question:'(Question about phishing) Voluntary: To what extent do you have a choice in being exposed to this risk? ', //(1=Voluntary; 5=Involuntary) 
     question: 'To what extent do you have a choice in being exposed to phishing? ',
+    questionRU:'По Вашему мнению насколько глубокими знаниями обладает обичный человек о риске фишинга? ',
+    optionsRU:[
+      'Ничего не знает',
+      'Очень мало знает',
+      'Что то знает о риске',
+      'Хорошо знает',
+      'Очень хорошо знает'
+    ],
+    questionBG:'Според вас, колко знае обикновен човек за рисковете на фишинга?',
+    optionsBG:[
+      'Нищо не знае за рисковете',
+      'Не знае много за рисковете',
+      'Може да знае може да не знае за рисковете',
+      'Знае за рисковете',
+      'Много знае за рисковете'
+    ],
     options: [
       'Completely voluntary',
       'Voluntary',
@@ -2756,6 +2880,23 @@ var skill_questions = [
     type: 'radio',
     //question:'(Question about phishing)	Immediacy: Is the risk from the phishing immediate or does it occur at a later time? ', //(1=Immediate; 5=Delayed)
     question: 'How immediate do you think is the risk from the phishing? ',
+    questionRU:'По Вашему мнению насколько опасен риск фишинга? ',
+    optionsRU:[
+      'Риск опасен',
+      'Риск до некоторой степени опасен',
+      'Риск является ни опасен ни безопасен',
+      'Риск до некоторой степени опасен',
+      'Риск неопасен'
+    ],
+
+    questionBG:'Колко е важно рискът от фишинга?',
+    optionsBG:[
+      'Много важно',
+      'Донякъде важно',
+      'Нито важно нито маловажно',
+      'Донякъде маловажно',
+      'Маловажно'
+    ],
     options: [
       'Immediate',
       'Somewhat immediate',
@@ -2769,6 +2910,22 @@ var skill_questions = [
     type: 'radio',
     //  question:'(Question about phishing) Knowledge to the exposed: How much would a person like you reasonably know about the implications of phishing? ',
     question: 'How much would the average person reasonably know about the risks of phishing? ',
+    questionRU:'По Вашему мнению насколько глубокими знаниями обладает обичный человек о риске фишинга? ',
+    optionsRU:[
+      'Ничего не знает',
+      'Очень мало знает',
+      'Что то знает о риске',
+      'Хорошо знает',
+      'Очень хорошо знает'
+    ],
+    questionBG:'Според вас, колко знае обикновен човек за рисковете на фишинга?',
+    optionsBG:[
+      'Нищо не знае за рисковете',
+      'Не знае много за рисковете',
+      'Може да знае може да не знае за рисковете',
+      'Знае за рисковете',
+      'Много знае за рисковете'
+    ],
     options: [
       'No knowledge',
       'Very little knowledge',
@@ -2782,6 +2939,20 @@ var skill_questions = [
     type: 'radio',
     //question:'(Question about phishing) Knowledge to the expert: How much would an expert know about the implications of phishing? ',
     question: 'To what extent would an expert know about the risks of phishing? ',
+    questionRU:'По Вашему насколько глубокими знаниями обладает эксперт о риске фишинга? ',
+    optionsRU:[
+      'Мы никогда не можем контролировать ущерб',
+      'Мы почти никогда не можем контролировать ущерб',
+      'Мы иногда можем контролировать ущерб',
+      'Мы можем контролировать ущерб почти каждый раз',
+      'Мы всегда можем контролировать ущерб.'
+    ],
+    questionBG:'До каква степен можем да контролираме последствията на фишинг атакове?',
+    optionsBG:['Никога не можем да ги контролираме',
+    'Почти никога не можем да ги контролираме',
+    'Понякога можем да ги контролираме',
+    'Можем да ги контролираме почти всеки път',
+    'Винаги можем да ги контролираме'],
     options: [
       'No knowledge',
       'Very little knowledge',
@@ -2795,6 +2966,20 @@ var skill_questions = [
     type: 'radio',
     //question:'(Question about phishing) To what extent can you control (or mitigate) the risk from being phished? ',// (1=Uncontrollable; 5=Controllable)
     question: 'To what extent can you control the harm that results from being phished ',
+    questionRU:'До какой степени вы считаете, что можете контролировать ущерб в результате фишинговой атаки?',
+    optionsRU:[  'Мы никогда не можем контролировать ущерб',
+    'Мы почти никогда не можем контролировать ущерб',
+    'Мы иногда можем контролировать ущерб',
+    'Мы можем контролировать ущерб почти каждый раз',
+    'Мы всегда можем контролировать ущерб.'],
+    questionBG:'До каква степен можем да контролираме последствията на фишинг атакове?',
+    optionsBG:[
+      'Никога не можем да ги контролираме',
+      'Почти никога не можем да ги контролираме',
+      'Понякога можем да ги контролираме',
+      'Можем да ги контролираме почти всеки път',
+      'Винаги можем да ги контролираме'
+    ],
     options: [
       'Never control harm',
       'Almost never control harm',
@@ -2802,12 +2987,29 @@ var skill_questions = [
       'Almost every time control harm',
       'Always control harm'
     ]
+    
   },
 
   {
     type: 'radio',
     // question:'(Question about phishing) Newness: Is phishing a new risk resulting from new technologies or is it a new version of an old risk? ',// (1=Old; 5=New)
     question: 'How novel do you think the risks from phishing are? ',
+    questionRU:'Как вы понимаете характер фишинга? ',
+    optionsRU:[
+      'Это очень старый риск',
+      'Это довольно старый риск',
+      'Этот риск ни старый ни новый',
+      'Это довольно новый риск',
+      'Это совсем новый риск'
+    ],
+    questionBG:'До каква степен смятате ли, че рисковете на фишинга са ново появление? ',
+    optionsBG:[
+      'Отдавно са същестували рисковете на фишинга',
+      'Повечето от рисковете са стари',
+      'Рисковете не са нито нови нито стари',
+      'Рисковете са донякъде стари',
+      'Рисковете са напълно нови'
+    ],
     options: [
       'Entirely an old risk',
       'Mostly an old risk',
@@ -2821,6 +3023,22 @@ var skill_questions = [
     type: 'radio',
     //  question:'(Question about phishing) Common-Dread: Is phishing commonplace or rarely encountered? ',// (1=Common; 5=Rare)
     question: 'How commonly encountered do you think phishing is? ',
+    questionRU: 'Как вы считаете? Как часто люди сталкиваются с фишингом? ',
+    optionsRU:[
+      'Это часто бывает',
+      'Это очень часто бывает',
+      'Это иногда бывает',
+      'Это бывает не очень часто ',
+      'Это редко бывает'
+    ],
+    questionBG:'Според Вас, колко често се срещаме с фишинга?',
+    optionsBG:[
+      'Често се срещаме с фишинга',
+      'Много често се срещаме с фишинга',
+      'Не се срещаме с фишинга много често',
+      'Рядко се срещаме с фишинга',
+      'Фишингът се случва нито често, нито рядко'
+    ],
     options: [
       'Common',
       'Frequently encountered',
@@ -2834,6 +3052,19 @@ var skill_questions = [
     type: 'radio',
     //  question:'(Question about phishing) Chronic-catastrophic: Does phishing affect only the person who is phished or does it affect many people? ',// (1= Individual; 5=(Many People) Global)
     question: 'Does phishing affect only the person who is phished or does it affect other people as well? ',
+    questionRU:'Как вы считаете? Фишинг может быть опасен для Вас персонально или для других пользователей в вашем окружением?',
+    optionsRU:['Фишинг опасен для конкретного пользователя',
+    'Фишинг опасен и для людей в окружении конкретного пользователя',
+    'Фишинг опасен для большого количества людей',
+    'Фишинг опасен для всех'],
+    questionBG:'Затяга ли фишингът само на индивидуален човек или на други хора също? ',
+    optionsBG:[
+      'на индивидуален човек',
+      'на няколко хора свързани с този идивид',
+      'на разни хора',
+      'на голямо количество хора',
+      'на много голямо количество хора'
+    ],
     options: [
       'Individual',
       'A few people associated with the individual',
@@ -2847,6 +3078,22 @@ var skill_questions = [
     type: 'radio',
     //question:'(Question about phishing) Severity: In the worst possible outcome, how severe are the consequences of phishing? ',// (1=Not Severe; 5=Severe)
     question: 'In the worst possible outcome, how severe are the consequences of phishing? ',
+    questionRU:'В худшем случае, насколько серьезны последствия фишинговой атаки?',
+    optionsRU:[
+      'вообще несерьезные',
+      'не банальные, но тоже не серьезные',
+      'ни банальные ни серьезные',
+      'может быть серьезные',
+      'серьезные'
+    ],
+    questionBG:'В най-лошия сценарий, колко тежки са последствията на фишинга?',
+    optionsBG:[
+      'Съвсем не тежки, маловажни',
+      'Не маловажни, а не тежки',
+      'Нито маловажни, нито тежки',
+      'Може да бъдат тежки',
+      'Тежки'
+    ],
     options: [
       'Not at all severe, trivial',
       'Not trivial but not severe',
@@ -2882,29 +3129,29 @@ var skill_questions = [
   // ]
   // },
 
-  {
-    type:'radio',
-    question:'How likely are you to sign-in into the COVID-19 information website? ',
-    options: [
-      'Not at all likely',
-      'Somewhat unlikely',
-      'May or may not be likely',
-      'Somewhat likely',
-      'Very likely'
-    ]
-  },
-  {
-    type:'radio',
-    // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
-    question:'Did you spend more or less time on viewing the COVID-19 website when compared to others?',
-    options: [
-      'Less time',
-      'More time',
-      'About the same amount of time',
-      'I do not remember'
-    ]
-  },
-
+	//  {
+  //  type:'radio',
+  //  question:'How likely are you to sign-in into the COVID-19 information website? ',
+  //  options: [
+  //  'Not at all likely',
+  //  'Somewhat unlikely',
+  //  'May or may not be likely',
+  //  'Somewhat likely',
+  //  'Very likely'
+  //  ]
+  //  },
+	//  {
+  //  type:'radio',
+  // // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
+  //  question:'Did you spend more or less time on viewing the COVID-19 website when compared to others?',
+  //  options: [
+  //  'Less time',
+  //  'More time',
+  //  'About the same amount of time',
+  //  'I do not remember'
+  //  ]
+  //  },
+	
   // {
   // type:'radio',
   // // question:'(Question about account takeover) Knowledge to the exposed: How much would a person like you reasonably know about the implications of account takeover? ',
@@ -2997,25 +3244,57 @@ var skill_questions = [
   // },
 
   {
-    type:'checkboxmatrix',
-    question: 'Please rate how far you agree or disagree with the following:',
-    columns: ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree'],
-    options: [
-      'Online companies would be trustworthy in handling my personal purchase preferences',
-      'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
-      'In general, it would be risky to give my personal purchase preference information to online companies',
-      'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
-      'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
-      'Select Agree for this question',
-      'It usually bothers me when online companies ask me for personal information',
-      'When online companies ask me for personal information, I sometimes think twice before providing it',
-      'It bothers me to give personal information to so many online companies',
-      'I\'m concerned that online companies are collecting too much personal information about me',
-      'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
-      'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
-      'Online companies should never sell the personal information in their computer databases to other companies',
-      'Online companies should never share personal information with other companies unless it has been authorized by the individuals who provided the information'
-    ]
+	  type:'checkboxmatrix',
+	  question: 'Please rate how far you agree or disagree with the following:',
+    questionRU:'В какой степени вы согласны или не согласны со следующими утверждениями:',
+    columnsRU:['полностью не согласен(а)', 'не согласен(а)', 'Ни согласен, ни несогласен', 'согласен(а)', 'полностью согласен(а)'],
+    optionsRU:[ 'Онлайн компании честно используют мои личные предпочтения по поводу онлайн покупок.  ',
+    'У меня есть доверие, что онлайн компании защищают мои личные данные когда я покупаю продукты в их сайтах.',
+    'В общем было бы рискованно дать онлайн компаниям информацию по поводу моих личных предпочтений.',
+    'Существует высокая вероятность потери связана с обменом информацией о личных предпочтениях.',
+    'Я готов предоставить интернет-компаниям свою личную информацию в обмен на скидки на продукты.',
+    'Мне мешает, когда интернет-компании просят доступ к личным информациям.',
+    'Я иногда стесняюсь, когда интернет-компании просят доступ к личным данным.',
+    'Мне мешает давать личные данные разным интернет-компаниям',
+    'Я боюсь того, что интернет-компании собирают слишком много информации обо мне.',
+    'Онлайн-компании не должны использовать личную информацию для каких-либо целей, если это не было разрешено лицами, предоставившими информацию',
+    'Когда люди предоставляют личную информацию онлайн-компании по определенной причине, онлайн-компания никогда не должна использовать эту информацию по какой-либо другой причине.',
+    'Онлайн-компании никогда не должны продавать личную информацию из своих компьютерных баз данных другим компаниям.',
+    'Онлайн-компании никогда не должны делиться личной информацией с другими компаниями, если это не было разрешено лицами, предоставившими информацию.'],
+    questionBG: 'До каква степен сте съгласни със следващите изречения:',
+    columnsBG:['Напълно несъгласен', 'Несъгласен', 'Донякъде несъгласен', 'Безразличен съм', 'Донякъде согласен', 'Съгласен', 'Напълно съгласен'], 
+    optionsBG:[
+      'Може да имаме доверие в онлайн компании, които знаят личните ни предпочитения.',
+		  'Вярвам, че онлайн компании етично управляват информацията относто личните предпочитения на клиентите си',
+		  'Общо взето, ще бъде рисковано да дам на интернет компании информация относто личните си предпочитения',
+		  'Има голям риск свързан с раздаването на личните предпочитения на онлайн компании',
+		  'Аз съм готов(а) да разкрия личната си информация в замяна на отстъпки на потребителски продукти',
+		  'Изберете Согласен',
+		  'Притеснявам се когато онлайн компании искат лична информация от мен.',
+		  'Понякога се колебая когато онлайн компании изискат лична информация.',
+		  'Притеснява ме да дам лична инфомация на разни онлайн компании',
+		  'Притеснява ме, че онлайн компании събират прекалено много информация за мен',
+		  'Когато хората дават на онлай компания лична информация по определена причина, компанията няма право да използва тази информация по друга причина',
+		  'Онлайн компании никога не трябва да продадат лична информация от бази данни на други компании',
+		  'Онлайн компании не трябва де споделят лична информация с други компании без разрешението на хората, които са им дали тази информация'
+    ],
+	  columns: ['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree'], 
+	  options: [
+		  'Online companies would be trustworthy in handling my personal purchase preferences',
+		  'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
+		  'In general, it would be risky to give my personal purchase preference information to online companies',
+		  'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
+		  'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
+		  'Select Agree for this question',
+		  'It usually bothers me when online companies ask me for personal information',
+		  'When online companies ask me for personal information, I sometimes think twice before providing it',
+		  'It bothers me to give personal information to so many online companies',
+		  'I\'m concerned that online companies are collecting too much personal information about me',
+		  'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
+		  'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
+		  'Online companies should never sell the personal information in their computer databases to other companies',
+		  'Online companies should never share personal information with other companies unless it has been authorized by the individuals who provided the information'
+		  ]
     //type: 'radio',
     //question: 'Online companies would be trustworthy in handling my personal purchase preferences',
     //options: [
@@ -3026,70 +3305,70 @@ var skill_questions = [
     //  '5',
     //  '6',
     //  '7 (Strongly agree)'
-    // ]
+   // ]
   },
-  {
-    type: 'freeform',
-    //question:'What is your Mechanical Turk ID?',
-    question: 'Please enter any feedback or thoughts about the experiment or survey. Enter NA if you do not wish to comment.',
-    response: 'hide',
-  }
+  //  {
+  //     type: 'freeform',
+  //     //question:'What is your Mechanical Turk ID?',
+  //     question: 'Please enter any feedback or thoughts about the experiment or survey. Enter NA if you do not wish to comment.',
+  //     response: 'hide',
+  //   }
 
   //{
   //  type: 'radio',
-  //   question: 'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
+ //   question: 'I trust that online companies would keep my best interests in mind when dealing with my personal purchase preference information',
   //  options: [
   //    '1 (Strongly disagree)',
   //    '2',
   //    '3',
   //    '4',
-  //     '5',
-  //     '6',
+ //     '5',
+ //     '6',
   //    '7 (Strongly agree)'
-  //   ]
-  // },
+ //   ]
+ // },
 
-  // {
+ // {
 //    type: 'radio',
 //    question: 'In general, it would be risky to give my personal purchase preference information to online companies',
 //    options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
-  //     '6',
-  //     '7 (Strongly agree)'
-  //   ]
-  // },
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
+ //     '6',
+ //     '7 (Strongly agree)'
+ //   ]
+ // },
 
   //{
-  //   type: 'radio',
-  //   question: 'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
-  //   options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
+ //   type: 'radio',
+ //   question: 'There would be high potential for loss associated with giving my personal purchase preference information to online firms',
+ //   options: [
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
 //      '6',
 //      '7 (Strongly agree)'
 //    ]
-  // },
+ // },
 
-  // {
-  //   type: 'radio',
-  //   question: 'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
-  //   options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
-  //     '6',
-  //     '7 (Strongly agree)'
-  //   ]
-  // },
+ // {
+ //   type: 'radio',
+ //   question: 'I am willing to give my personal purchase preference information to online companies in exchange for discounts on consumer products',
+ //   options: [
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
+ //     '6',
+ //     '7 (Strongly agree)'
+ //   ]
+ // },
 
 //  {
 //    type: 'radio',
@@ -3147,47 +3426,47 @@ var skill_questions = [
 //    ]
 //  },
 
-  // {
-  //   type: 'radio',
-  //   question: 'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
-  //   options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
-  //     '6',
-  //     '7 (Strongly agree)'
-  //   ]
-  // },
+ // {
+ //   type: 'radio',
+ //   question: 'Online companies should not use personal information for any purpose unless it has been authorized by the individuals who provided the information',
+ //   options: [
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
+ //     '6',
+ //     '7 (Strongly agree)'
+ //   ]
+ // },
 
-  // {
-  //   type: 'radio',
-  //   question: 'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
-  //   options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
-  //     '6',
-  //     '7 (Strongly agree)'
+ // {
+ //   type: 'radio',
+ //   question: 'When people give personal information to an online company for some reason, the online company should never use the information for any other reason',
+ //   options: [
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
+ //     '6',
+ //     '7 (Strongly agree)'
   //  ]
-  // },
+ // },
 
-  // {
-  //   type: 'radio',
-  //   question: 'Online companies should never sell the personal information in their computer databases to other companies',
-  //   options: [
-  //     '1 (Strongly disagree)',
-  //     '2',
-  //     '3',
-  //     '4',
-  //     '5',
-  //     '6',
-  //     '7 (Strongly agree)'
-  //   ]
-  // },
+	// {
+ //   type: 'radio',
+ //   question: 'Online companies should never sell the personal information in their computer databases to other companies',
+ //   options: [
+ //     '1 (Strongly disagree)',
+ //     '2',
+ //     '3',
+ //     '4',
+ //     '5',
+ //     '6',
+ //     '7 (Strongly agree)'
+ //   ]
+ // },
 
   //{
   //  type: 'radio',
@@ -3200,10 +3479,9 @@ var skill_questions = [
   //    '5',
   //    '6',
   //    '7 (Strongly agree)'
-  //   ]
-  // }
+ //   ]
+ // }
 ];
-
 // console.log("OPTS: " + opts)
 var PreStudyQuestions = [
   //    {
@@ -3217,10 +3495,14 @@ var PreStudyQuestions = [
   {
     type: 'freeformint',
     question: 'What is your age?',
+    questionRU: 'Сколько Вам лет?',
+    questionBG: 'На колко години сте?',
     minimum: '18',
     maximum: '120',
     response: 'hide',
-    rejecterror: 'This study is only for participants between the ages of 18 and 120 years'
+    rejecterror: 'This study is only for participants between the ages of 18 and 120 years',
+    rejecterrorRU: 'Это исследование предназначено только для участников в возрасте от 18 до 120 лет.',
+    rejecterrorBG: 'Това проучване е само за участници на възраст между 18 и 120 години'
 
     //type:'freeform',
     //question:'What is your age?',
@@ -3236,7 +3518,7 @@ var PreStudyQuestions = [
     //  'more than 80 years'
     //	]
   },
-
+  
   //{
   //	type:'radio',
   //	question: 'Can you read and understand English?',
@@ -3249,19 +3531,41 @@ var PreStudyQuestions = [
   {
     type: 'radio',
     question: 'What is the highest degree or level of school you have completed? (If you are currently enrolled in school, please indicate the highest degree you have received.)',
+    questionRU: 'Какая самая высокая степень или уровень образования, которую вы закончили?',
+    questionBG: 'Вашето ниво на образование:',
     options: [
       'Less than a high school diploma',
       'High school degree or equivalent (e.g. GED) Some college, no  degree',
-      'Associate degree (e.g. AA, AS)',
+      //'Associate degree (e.g. AA, AS)',
       'Bachelor\'s degree (e.g. BA, BS)',
       'Master\'s degree (e.g. MA, MS,  MEd)',
       'Professional degree (e.g. MD, DDS, DVM)',
       'Doctorate (e.g. PhD, EdD)'
-    ]
+    ],
+  optionsRU:[
+    'У меня нет ни аттестата ни диплома',
+    'У меня аттестат и/или диплом',
+    'У меня бакалавр',
+    'У меня магистр',
+    'Я дипломированный специалист',
+    'У меня докторат'
+
+  ],
+  optionsBG:[
+    'Аз не съм получил диплома от гимназия',
+    'Диплома от гимназия',
+    'Бакалавър',
+    'Магистър',
+    'Друга професионална степен',
+    'Докторска степен'
+  ]
+  
   },
   {
     type: 'radio',
     question: 'What is your current employment status?',
+    questionRU: 'Сколько вы работаете?',
+    questionBG: 'Колко работите?',
     options: [
       'Employed full time (40 or more hours per week)',
       'Employed part time (less than 40 hours per week)',
@@ -3271,91 +3575,8 @@ var PreStudyQuestions = [
       'Retired or Homemaker',
       'Self-employed',
       'Unable to work'
-    ]
-  }//,
-  //this question needs to be modified for countries --- not same income levels
-  //   {
-  //	type:'radio',
-  //	question:'What is your annual income?',
-  //	options: [
-  //	    'Less than $20,000',
-  //	    '$20,000 to $34,999',
-  //	    '$35,000 to $49,999',
-  //	    '$50,000 to $74,999',
-  //	    '$75,000 to $99,999',
-  //	    'Over $100,000'
-  //	]
-  //   },
-  // {
-  //  type: 'radiowithother',
-  //  question: 'What is your nation of citizenship?',
-  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
-  //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
-  // },
-  //{
-  //  type:'radiowithother',
-  //  question:'In what nation do you currently live?',
-  //  options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
-  //}    
-];
-
-var PreStudyQuestions_US = [
-  //    {
-  //	type: 'freeform',
-  //	question:'What is your first name?',
-  //    },
-  //    {
-  //	type: 'freeform',
-  //	question: 'What is your last name?',
-  //    },
-  {
-    type: 'freeformint',
-    question: 'Сколько Вам лет?',
-    minimum: '18',
-    maximum: '120',
-    response: 'hide',
-    rejecterror: 'This study is only for participants between the ages of 18 and 120 years'
-
-    //type:'freeform',
-    //question:'What is your age?',
-    //response: 'hide',
-    //options: [
-    //  'Less than 18 years',
-    //  '18-30 years',
-    //  '30-40 years',
-    //  '40-50 years',
-    //  '50-60 years',
-    //  '60-70 years',
-    //  '70-80 years',
-    //  'more than 80 years'
-    //	]
-  },
-
-  //{
-  //	type:'radio',
-  //	question: 'Can you read and understand English?',
-  //	options: [
-  //	    'Yes',
-  //	    'No'
-  //	],
-  //	mustbechecked:'Yes'
-  //  },
-  {
-    type: 'radio',
-    question: 'Какова самая высокая степень или уровень образования, которую вы закончили?)',
-    options: [
-      'У меня нет ни аттестата ни диплома',
-      'У меня аттестат и/или диплом',
-      'У меня бакалавр',
-      'У меня магистр',
-      'Я дипломированный специалист',
-      'У меня докторат'
-    ]
-  },
-  {
-    type: 'radio',
-    question: 'Сколько вы работаете?',
-    options: [
+    ],
+    optionsRU:[
       'Я работаю 40+ часов в неделью',
       'Я работаю меньше 40 часов в неделью',
       'У меня нет работы и я ищу работу',
@@ -3364,91 +3585,8 @@ var PreStudyQuestions_US = [
       'Я вышел(ла) на пенсию',
       'Я работаю не по найму',
       'Я не могу работать'
-    ]
-  }//,
-  //this question needs to be modified for countries --- not same income levels
-  //   {
-  //	type:'radio',
-  //	question:'What is your annual income?',
-  //	options: [
-  //	    'Less than $20,000',
-  //	    '$20,000 to $34,999',
-  //	    '$35,000 to $49,999',
-  //	    '$50,000 to $74,999',
-  //	    '$75,000 to $99,999',
-  //	    'Over $100,000'
-  //	]
-  //   },
-  // {
-  //  type: 'radiowithother',
-  //  question: 'What is your nation of citizenship?',
-  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
-  //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
-  // },
-  //{
-  //  type:'radiowithother',
-  //  question:'In what nation do you currently live?',
-  //  options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
-  //}    
-];
-
-var PreStudyQuestions_NZ = [
-  //    {
-  //	type: 'freeform',
-  //	question:'Вашето име:',
-  //    },
-  //    {
-  //	type: 'freeform',
-  //	question: 'Вашето презиме, фамилия:',
-  //    },
-  {
-    type: 'freeformint',
-    question: 'На колко години сте?',
-    minimum: '18',
-    maximum: '120',
-    response: 'hide',
-    rejecterror: 'This study is only for participants between the ages of 18 and 120 years'
-
-    //type:'freeform',
-    //question:'What is your age?',
-    //response: 'hide',
-    //options: [
-    //  'По-малко от 18 годинии',
-    //  '18-30 години',
-    //  '30-40 години',
-    //  '40-50 години',
-    //  '50-60 години',
-    //  '60-70 години',
-    //  '70-80 години',
-    //  'Повече от 80 години'
-    //	]
-  },
-
-  //{
-  //	type:'radio',
-  //	question: 'Can you read and understand English?',
-  //	options: [
-  //	    'Yes',
-  //	    'No'
-  //	],
-  //	mustbechecked:'Yes'
-  //  },
-  {
-    type: 'radio',
-    question: 'Вашето ниво на образование:',
-    options: [
-      'Аз не съм получил диплома от гимназия',
-      'Диплома от гимназия',
-      'Бакалавър',
-      'Магистър',
-      'Друга професионална степен',
-      'Докторска степен'
-    ]
-  },
-  {
-    type: 'radio',
-    question: 'Колко работите?',
-    options: [
+    ],
+    optionsBG:[
       '40 или повече часове седмично',
       'По-малко от 40 часове седмично',
       'Нямам работа и търся работа',
@@ -3458,7 +3596,8 @@ var PreStudyQuestions_NZ = [
       'Аз работя за себе си',
       'Аз не мога да работя'
     ]
-  }//,
+  }
+  //,
   //this question needs to be modified for countries --- not same income levels
   //   {
   //	type:'radio',
@@ -3472,15 +3611,16 @@ var PreStudyQuestions_NZ = [
   //	    'Over $100,000'
   //	]
   //   },
-  // {
+ // {
   //  type: 'radiowithother',
   //  question: 'What is your nation of citizenship?',
-  // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
+    // options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
   //  options: ['United States', 'Australia', 'New Zealand', 'United Kingdom', 'Canada']
-  // },
+ // },
   //{
   //  type:'radiowithother',
   //  question:'In what nation do you currently live?',
   //  options:['United States','Australia','New Zealand', 'United Kingdom', 'South Africa', 'India', 'China']
   //}    
-];
+]
+  

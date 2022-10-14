@@ -1,4 +1,3 @@
-
 //variable definitions
 var trialNum=0;
 var legitimateSites=0;
@@ -12,6 +11,7 @@ var sampleTime = 0;
 var penaltyTime = 0;
 var trialTime = 0;
 var bonusTime = 280;
+var nTrials = 10;
 var bonusPay = 8.00;
 var startTrialTime=0;
 var startInstructionTime=0;
@@ -27,10 +27,11 @@ var part=0;
 var currentPart=0;
 var badSitesLoggedInto = 0;
 var goodSitesSkipped = 0;
-
 var parentWindow = window.opener;
 var participantId = window.opener.document.getElementById("workerId").value;
 var testMap = '<map id="scaleMap0" name="map"><area shape="circle" coords="20,95,17" href="javascript:advanceExperiment(\'back\')" /><area shape="rect" coords="1455,79,1865,774"  href="javascript:advanceExperiment(\'login\')" /></map>';
+
+
 
 function serverTimer() {
   $.ajax({  
@@ -43,6 +44,8 @@ function serverTimer() {
   });
 }
 
+
+
 //function sendPulse(pulseDuration){
 //  var xhttp = new XMLHttpRequest();
 //  xhttp.onreadystatechange = function() {
@@ -54,7 +57,17 @@ function serverTimer() {
 //    xhttp.send();
 //}
 
-var participantInfo = {id:participantId,os: navigator.oscpu,browser:navigator.appCodeName,version:navigator.appVersion,simplifiedOS: null};
+
+
+var participantInfo =  
+{
+  id:participantId,
+  os: navigator.oscpu,
+  browser:navigator.
+  appCodeName,
+  version:navigator.appVersion,
+  simplifiedOS: null
+};
 
 //console.log(navigator.oscpu); 
 //console.log(participantInfo);
@@ -85,16 +98,22 @@ participantInfo.simplifiedOS = "Windows";
 participantInfo.map = winMapDict;
 
 
+
 var stimuliDirectory="../Images/"+participantInfo.simplifiedOS;
+
 
 
 //speed v accuracy
 var conditionNumber = window.opener.document.getElementById("experimentCondition").value;
 // Debug
 //console.log("conditionNumber: " + conditionNumber);
+
+
+
 var experimentalConditions = ["Speed","Accuracy"];
 
 //taskOrder
+/*
 var tasks = [
   {"taskSite":"airbnb","pages":2,"condition":"EV"},
   {"taskSite":"battle","pages":2,"condition":"EV"},
@@ -109,7 +128,6 @@ var tasks = [
   {"taskSite":"ups", "pages":2, "condition":"EV"},
   {"taskSite":"wordpress", "pages":2, "condition":"EV"},
   {"taskSite":"yahoo", "pages":2, "condition":"EV"},
-
   {"taskSite":"adcash","pages":2,"condition":"SV"},
   {"taskSite":"adfly","pages":2,"condition":"SV"},
   {"taskSite":"adobe","pages":2,"condition":"SV"},
@@ -124,6 +142,9 @@ var tasks = [
   {"taskSite":"twitch","pages":2,"condition":"SV"},
   {"taskSite":"yelp","pages":2,"condition":"SV"}  
 ];
+*/
+
+
 
 // if(countrycode != "US"){
 //   tasks = [];
@@ -152,15 +173,17 @@ var taskDifficulty = [
   [3,3,1,1,3,3,1,1,3,3,1,1,3,3,1,1,3,3,1,1,3,3,1,3,1,1]  // order8 - highrisk + spoofed
 ];
 
+var presentationIndex = [0,1,2,3,4,5,6,7,8,9];
 //var presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
-var presentationIndex = []; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
+// var presentationIndex = []; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
 
-var nTrials = tasks.length;
+// var nTrials = tasks.length;
 
 function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); }
 
 //document actions
 $(document).ready(function(){
+
   $('#submitButton').hide();
   $('#startTrial').hide();
   //TODO: Have added separate display for accuracy condition in experiment.php.  Is hidden here until the different experiment conditions are functional
@@ -171,8 +194,11 @@ $(document).ready(function(){
     xPos = event.pageX;
     yPos = event.pageY;
   });
+  
   $(document).on( "click", function( event ) {
+    //alert(xPos);  
     mouseClick['button'] += event.which+";"+mouseClick['button'];
+    //alert(mouseClick['button']);
     mouseClick['time'] += new Date().getTime()+";"+mouseClick['time'];
     mouseClick['mouseX'] += event.pageX +";"+mouseClick['mouseX'];
     mouseClick['mouseY'] += event.pageY +";"+mouseClick['mouseY'];
@@ -188,22 +214,23 @@ $(document).ready(function(){
   countrycode = $('#countrycode').text();
   //if(countrycode === ""){
   // console.log(countrycode);
-  if (typeof countrycode == 'undefined'){
-      countrycode = "US";
-  }
+  // if (typeof countrycode == 'undefined'){
+  //     countrycode = "US";
+  // }
   // console.log(countrycode);
   $('#countrycode').hide();
   participantInfo.map = dict[countrycode];
-
+  
   ordergroup = $('#ordergroup').text();
   $('#ordergroup').hide();
 
 
-  console.log(countrycode);
+  /*
+  //console.log(countrycode);
   var keys = Object.keys(dict[countrycode + ""]);
-  // console.log(keys)
-   console.log(tasks["taskSite"])
-  tasks = [];
+  //console.log(keys);
+  //console.log(tasks["taskSite"])
+  var tasks = [];
   presentationIndex = []
   var arrayLength = keys.length;
   for (var i = 0; i < arrayLength; i++) {
@@ -217,7 +244,8 @@ $(document).ready(function(){
           presentationIndex.push(i/2);
         }
       }
-    }else{
+    }
+    else{
       if(!keys[i].match(/12/)){
         var str = keys[i];
         // console.log(str);
@@ -233,6 +261,7 @@ $(document).ready(function(){
       presentationIndex.push(i);
     }
   }
+
   // console.log(presentationIndex);
   
   // if(countrycode == "NZ"){
@@ -242,8 +271,8 @@ $(document).ready(function(){
   //   //presentationIndex = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
   //   presentationIndex = [0,1]; //we will need to make sure the orresponding sites are removed, I would just copy the files in so that there are 13 in each folder
   // }
-  
-  nTrials = tasks.length;
+  */
+  //nTrials = tasks.length;
 
   // console.log(tasks["taskSite"])
   // console.log(tasks);
@@ -259,11 +288,20 @@ $(document).ready(function(){
       var posting = $.post('dataReceiver.php', $form.serialize());
 
       posting.done(function(data){
-        if (data.indexOf("Here is a tally of your performance") > -1) {
-          $("#startTrial").remove();
-          $("#stimuli").html(data).show();}
+        if(countrycode == "RU" || countrycode == "UA" || countrycode =="BY"){
+          if (data.indexOf("Вот ваши результаты") > -1) {
+            $("#startTrial").remove();
+            $("#stimuli").html(data).show();}
+        
+        }
+        if(countrycode == 'BG'){
+          if (data.indexOf("Ето резултатите от Вашето изпълнение") > -1) {
+            $("#startTrial").remove();
+            $("#stimuli").html(data).show();}
+        }
       });
-      return false;
+        
+        return false;
     });
 
 });
@@ -408,16 +446,18 @@ function startExperiment(){
   if(experimentRunning){
     return;
   }
+
   experimentCondition = experimentalConditions[conditionNumber];
   //experimentOrderNumber = getRandomSubarray(taskOrdering,1)[0];
   experimentOrderNumber = orderingdictionary[ordergroup];
   presentationOrder = getRandomSubarray(presentationIndex,nTrials);
-  // console.log(presentationOrder);
+  console.log(experimentOrderNumber);
+  //console.log(presentationOrder);
   participantInfo.experimentCondition = experimentCondition;
   participantInfo.experimentOrderNumber = experimentOrderNumber;
   participantInfo.experimentPresentationOrder = presentationOrder;
   stimuliDirectory = stimuliDirectory+ "/" + countrycode + "/Order";
-	console.log(stimuliDirectory);
+	//console.log(stimuliDirectory);
   experimentRunning=true;
   //hide the experiment start
   $('#startExperiment').hide();
@@ -431,6 +471,7 @@ function showInstructions(){
   }
   //setup Stimuli
   trial = loadAndSaveStimuli();
+  //console.log(trial);
   //start mouse tracking
 
   startInstructionTime = new Date().getTime();
@@ -443,7 +484,12 @@ function showInstructions(){
   mouseClick = {"button":"","time":"","mouseX":"","mouseY":"","type":""};
   //for each trial
   //show instructions
-  var instructionHTML = '<center><strong>Trial '+(trialNum+1)+' of '+nTrials+'</strong><br>When you are ready press the start trial button</center>';
+  if(countrycode === "RU" || countrycode === "UA" || countrycode === "BY"){
+    var instructionHTML = '<center><strong>Испытание '+(trialNum+1)+'/'+nTrials+'</strong><br>Когато сте готови, натиснете бутона за стартиране на пробен период</center>';
+  }
+  if(countrycode === "BG"){
+    var instructionHTML = '<center><strong>Trial '+(trialNum+1)+'/'+nTrials+'</strong><br>Когато сте готови, натиснете бутона за стартиране на пробен период</center>';
+  }
   $('#stimuli').html(instructionHTML).show();
   //sendPulse(10);
   $('#startTrial').show();
@@ -454,42 +500,70 @@ function showInstructions(){
 function loadAndSaveStimuli(){
   // console.log(countrycode);
   var keys = Object.keys(dict[countrycode + ""]);
-//console.log(keys)
-console.log("Checking tasksite at line 481");
-  console.log(tasks["taskSite"]);
-  tasks = [];
+  //console.log(keys)
+  
+  var tasks = [];
   var arrayLength = keys.length;
+
   for (var i = 0; i < arrayLength; i++) {
     if(experimentOrderNumber === 0 || experimentOrderNumber === 1){
+      
       if(keys[i].match(/12/)){
         var str = keys[i].replace('12', '');
-         console.log(str);
-        tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
+        //console.log(str);
+        tasks.push({"taskSite":str,"pages":2,"condition":"EV"});  
       }
-    }else{
+    }
+    else
+    {
+      
       if(!keys[i].match(/12/)){
         var str = keys[i];
-         console.log(str);
+        //console.log(str);
         tasks.push({"taskSite":str,"pages":2,"condition":"EV"});
       }
     }
+
+
   }
+  //console.log(tasks);
   var task = tasks[participantInfo.experimentPresentationOrder[trialNum]];
-  // console.log(task);
+  //console.log(participantInfo);
+  console.log(task)
   var trialDifficulty = taskDifficulty[participantInfo.experimentOrderNumber][participantInfo.experimentPresentationOrder[trialNum]];
-  // console.log("participantInfo.experimentOrderNumber: " + participantInfo.experimentOrderNumber);
-  // console.log("participantInfo.experimentPresentationOrder[trialNum]: " + participantInfo.experimentPresentationOrder[trialNum]);
-  // console.log("trialDifficulty: " + trialDifficulty);
   var trial = {"difficulty": trialDifficulty, "trialNumber": trialNum,"image":task["taskSite"],"trialCondition":task["condition"],"pages":task["pages"]};
-  // Debug 
-  //console.log(participantInfo.experimentOrderNumber + ", " + participantInfo.experimentPresentationOrder[trialNum]);
-  // console.log(trial);
+    //console.log(participantInfo);
+    // for(var i = 0;i < tasks.length;i++){
+
+    // }
+   
+
+
+
+    // console.log("participantInfo.experimentOrderNumber: " + participantInfo.experimentOrderNumber);
+    // console.log("participantInfo.experimentPresentationOrder[trialNum]: " + participantInfo.experimentPresentationOrder[trialNum]);
+    // console.log("trialDifficulty: " + trialDifficulty);
+    
+    
+    // Debug 
+    //console.log(participantInfo.experimentOrderNumber + ", " + participantInfo.experimentPresentationOrder[trialNum]);
+    // console.log(trial);
+    
+  
+  //console.log(tasks);
   return(trial);
+ 
 }
 
 function updateClockHTML(elapsedTime, elapsedPenaltyTime,totalBonusTime,maxBonusPay, condition){
   if (condition == 'Accuracy') {
-    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
+    if(countrycode == "UA" || countrycode == "RU" || countrycode == "BY"){
+      return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
+    }
+    if(countrycode == "BG"){
+      return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
+    }
+    
   }
   else if (condition == 'Speed') {
     return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Elapsed Time: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td><td>Bonus Pay: '+calculatePay((elapsedTime+elapsedPenaltyTime),totalBonusTime,maxBonusPay,experimentCondition)+'</td></tr></table></center>');
@@ -501,7 +575,14 @@ function updateReport(elapsedTime, elapsedPenaltyTime,totalBonusTime,maxBonusPay
     return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Got Right: '+(trialNum-(badSitesLoggedInto+goodSitesSkipped))+'</td><td>Got Wrong: '+(badSitesLoggedInto+goodSitesSkipped)+'</td></tr></table></center>');
   }
   else if (condition == 'Speed') {
-    return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>Elapsed Time: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td></tr></table></center>');
+    //Add Translations for Penalty Time
+    if(countrycode == "RU" || countrycode == "UA" || countrycode == "BY"){
+      return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>пройденное время: '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td></tr></table></center>');
+    }
+    if(countrycode == "BG"){
+      return('<center><table border=1 rules=none cellspacing=10 cellpadding=10><tr><td>изтечено време '+(elapsedTime+elapsedPenaltyTime).toFixed(2)+'</td><td>Penalty Time: '+elapsedPenaltyTime.toFixed(2)+'</td></tr></table></center>');
+    }
+    
   }
 }
 
@@ -542,8 +623,8 @@ function startTrial(){
   }
   var initialSource = stimuliDirectory+""+spoofedOrNot+"/"+trial.image;
   var image = initialSource+".jpg";
-  console.log("testing images");
-  console.log(image);
+  //console.log(trial.image);
+  //console.log(image);
   // if(countrycode != "US"){
   //   image = initialSource+"_" + countrycode + ".jpg";
   // }
@@ -560,6 +641,7 @@ function startTrial(){
   // Debug
   //console.log("experimentOrderNumber: " + experimentOrderNumber + ", trial_image: " + trial_image);
   var imageMap = participantInfo.map[trial_image];
+  //console.log(imageMap);
   //  var loginMap = participantInfo.map[trial.image+"_login"];
   //console.log(loginMap);
   var trialHTML = "";
@@ -572,8 +654,8 @@ function startTrial(){
     trialHTML = '<center><img src=\"'+image+'\" alt='+trial.image+' id="stimuliImage1" border="0" usemap="#'+trial_image+"_map"+'"/>'+imageMap+'</center>';
     //      trialHTML = trialHTML + '<center><img src=\"'+loginImage+'\" alt='+trial.image+' id="stimuliImage2" border="0" usemap="#'+trial.image+"_login_map"+'"/>'+loginMap+'</center>';
   }
-  console.log("Debug");
-  console.log(imageMap);
+  //console.log("Debug");
+  //console.log(imageMap);
 
   //first we show initial screen with potential manipulations.
   $('#report').html(updateClockHTML(trialTime,penaltyTime,bonusTime,bonusPay, experimentCondition)).show();

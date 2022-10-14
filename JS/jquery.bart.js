@@ -151,18 +151,18 @@
                                              //    number of explosions for each balloon
             frmids_time:     [],             // optional ids of hidden form elements to save 
                                              //    mean latency between pumps (excluding time before first pump)
-            txt_phishing: 'Към експериментът',      // text on 'Got to Phishing Experiment' button
-            txt_cashin: 'Следващият Балон',      // text on 'Cash in' button
-            txt_inflate: 'Надуване на Балона',  // text on 'Inflate' button
-            txt_next:    'Продължи',     // text on 'Next' button
-            txt_balloon_number: 'Номер на Балона: ',          // text for balloon number
+            txt_phishing: 'К эксперименту',      // text on 'Got to Phishing Experiment' button
+            txt_cashin: 'следующий шарик',      // text on 'Cash in' button
+            txt_inflate: 'надувать шарик',  // text on 'Inflate' button
+            txt_next:    'продолжать',     // text on 'Next' button
+            txt_balloon_number: 'Номер: ',          // text for balloon number
             txt_number_of_pumps: 'Number of pumps: ',        // text for number of pumps
-            txt_current_earned: 'Актуална сума (¢): ',          // text for current earnings
-            txt_total_earned: 'Обща сума (¢): ',              // text for total earnings
+            txt_current_earned: 'Сумма: ',          // text for current earnings
+            txt_total_earned: 'Общая сумма ',              // text for total earnings
             txt_prob_explosion: 'Probability of explosion:', // text for probability of explosion
             txt_pumps_used: 'Max. available pumps used:',    // text for percentage of used pumps
             onload:    function() {},        // function to run before loading the script 
-            onend:    function() {alert("Благодарим Ви! Моля, изчакайте докато експеримент се зарежда."); }          // function to run after finishing the last balloon 
+            onend:    function() {alert("Подождите, пожалуйста, пока страница загружается."); }          // function to run after finishing the last balloon 
         };
         
         var canvas = null, snds = {}, r = [];
@@ -799,7 +799,7 @@
         $.post('dataReceiver.php', $("#surveyResults").serialize());
         $("#sis").hide();
         popup("experiment.php");
-        $("#question").html("<h3> Пожалуйста не закройте эту страницу пока вы работаете над экспериментом. Обновление или закртитие страницы аннулирует ваш результат.</h3>").show();
+        $("#question").html("<h3>Please leave this window open while completing the site tasks. Closing or reloading this page will invalidate the results and you will not get paid.</h3>").show();
         questions = cultureQuestions.concat(skill_questions);
         which_set = "skills";
         break;

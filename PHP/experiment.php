@@ -122,13 +122,22 @@ echo "
 </div>
 <div id=\"bonus\">
 </div>
-</div>-->
+</div>--> ";
 
-<div id=\"loading\"><H3>Please Wait While the Trial Loads</H3><br>
-<img src=\"../Images/imagesforscreenshots/loading.gif\">
-</div>
+if($_SESSION['country'] == "RU" || $_SESSION['country'] == "UA" || $_SESSION['country'] == "BY"){
+	echo "<div id=\"loading\"><H3>Пожалуйста, подождите, пока загрузится пробная версия</H3><br>
+	<img src=\"../Images/imagesforscreenshots/loading.gif\">
+	</div>";
+	
+}
+if($_SESSION['country'] == "BG"){
+	echo "<div id=\"loading\"><H3>Моля, изчакайте докато се зареди пробната версия</H3><br>
+	<img src=\"../Images/imagesforscreenshots/loading.gif\">
+	</div>";
+	
+}
 
-<div id=\"stimuli\">
+echo "<div id=\"stimuli\">
 <div id=\"stimuliImage1\"></div>
 <div id=\"stimuliImage2\"></div>
 <div id=\"ordergroup\">" . $_SESSION['group'] . "</div>
@@ -137,18 +146,21 @@ echo "
 </div>
 
 <br>
+";
+if($_SESSION['country'] == "RU" || $_SESSION['country']== "UA" || $_SESSION['country'] == "BY"){
+	echo "<a href=\"javascript:advanceExperiment('startTrial')\" id=\"startTrial\"><button type=\"button\">
+	Начинать</button></a>";
+}
+if($_SESSION['country'] == "BG" ){
+	echo "<a href=\"javascript:advanceExperiment('startTrial')\" id=\"startTrial\"><button type=\"button\">
+	Започнете</button></a>";
+}
 
-<a href=\"javascript:advanceExperiment('startTrial')\" id=\"startTrial\"><button type=\"button\">
-Start Trial
-</button></a>
 
-
-<form id=\"results\" action=\"/\" method=\"post\">
-  <input id=\"trials\" name=\"trials\" type=\"hidden\" >
+echo 
+"<form id=\"results\" action=\"/\" method=\"post\">
+  <input id=\"trials\" name=\"trials\" type=\"hidden\">
 </form>
-
-
-
 </center>
 </body>
 </html>

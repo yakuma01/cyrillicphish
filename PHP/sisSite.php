@@ -9,7 +9,11 @@ $session_expired = array(
 //  'US' => 1,
 //  'UK' => 1,
 //  'AU' => 1,
-//  'NZ' => 1
+//  'NZ' => 1,
+//  'RU' => 1,
+//  'UA' => 1,
+//  'BY' => 1,
+//  'BG' => 1
 );
 
 if (isset($_GET['workerId']) && !empty($_GET['workerId'])){
@@ -125,121 +129,149 @@ $_SESSION['sisStart'] = true;
 ?>
 </head>
 <div id="studyarea" class="ease">
-<div id="jscriptwarning">Трябва да имате включен Javascript за да участвате в проекта.</div>
+<!-- <?php if($_SESSION['country'] == 'RU' || $_SESSION['country']=='UA' || $_SESSION['country']== 'BY') { ?>
+	<div id="jscriptwarning">You must have javascript enabled to take this study.</div>
+<?php } ?> -->
+
+
+
 <div id="sis">
       <div id="countrycode"><?= $_SESSION['country']; ?></div>
 <?php if(array_key_exists($_SESSION['country'], $session_expired)){ ?>
-<center><h2><font color="red">Извиняваме се. За сега този експеримент е затворен.</font></h2></center>
+<h2 style="align:center;">I am sorry. The experiment is closed now</h2>
 <?php } ?>
-<?php if($_SESSION['country'] == "US" || $_SESSION['country'] == "CA"){ ?>
+<?php if($_SESSION['country'] == "RU" || $_SESSION['country'] == "UA"  || $_SESSION['country'] == "BY"){ ?>
 <H3 ALIGN=RIGHT><I>IRB Study 1707304414</I></H3></right>
 
-<center><H3>ИНФОРМАЦИОННА СТРАНИЦА НА ИНДИАНСКИЙ УНИВЕРСИТЕТ</H3></center><p>
-<H3>ПРЕДСТАВЯНЕ</H3><P>
-        Ако Ви е интересно да ни помогнете да разберем по-добре на какво потребителите в интернета 
-		обръщат внимание, каним Ви да  
-		участвате в нашето изследване. Този проект се управлява от Уилиям Смийл от Университета в Индиана, САЩ.
-		<P><B>Молим Ви да не участвате ако българският език не Ви е роден и сте на по-малко от 18 години.</B></P>		
-<?php
+<H3 style="text-align:center;">INDIANA UNIVERSITY STUDY INFORMATION SHEET</H3><p>
+
+
+<H3>ПРЕДСТАВЛЕНИЕ</H3><P>
+Если Вам интересно помочь нам лучше понимать, на что потребители Интернета обращают внимание, мы приглашаем Вас поучаствовать в нашем научном исследовании. Это исследование проводится аспирантами Вильям Смийль и Яш Кумар из Индианского университета в Индиане, США.
+		<P><B>Не участвуйте, пожалуйста, если Вы не являетесь носителем русского или болгарского языка и Вам меньше 18 лет.</B></P>		
+<!-- <?php
 		if($_SESSION['type'] == 'mturk'){
-			//echo "<P>Вие бяхте избран като възможен участник, защото приехте поканата ни да участвате в този изследователски проект и българския език ви е роден. Трябва да сте запознати и да имате опит в използването на браузъра Firefox, за да участвате в този проект. Ако не отговаряте на тези квалификации, не приемайте тази задача, тъй като резултатите Ви могат да бъдат отхвърлени. Молим Ви да прочетете този формуляр и да зададете всички въпроси, които имате, преди да се съгласите да участвате в проучването. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey. </P>";
+			//echo "<P>You were selected as a possible subject because you have a Mechanical Turk account in good standing and you can read and understand the English language. You must be familiar with and have experience using the Firefox browser to participate in this study. If you do not meet these qualifications, do not accept this task as your results may be rejected. We ask that you read this form and ask any questions you may have before agreeing to be in the study. Before you begin, please note that the data you provide may be collected and used by Amazon as per its privacy agreement. <B>Additionally, you must be at least 18 years of age to participate in this study</B>; if you are under the age of 18, please do not complete this study. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey. </P>";
         }
             else if($_SESSION['type'] == 'inv'){
-			echo "<P>Вие бяхте избран като възможен участник, защото приехте поканата ни да участвате в този изследователски проект и българския език ви е роден. Трябва да сте запознати и да имате опит в използването на браузъра Firefox, за да участвате в този проект. Ако не отговаряте на тези квалификации, не приемайте тази задача, тъй като резултатите Ви могат да бъдат отхвърлени. Молим Ви да прочетете този формуляр и да зададете всички въпроси, които имате, преди да се съгласите да участвате в проучването.. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</P>";
+			echo "<P>You were selected as a possible subject because you have accepted our invitation to participate in the study and you can read and understand the English language. You must be familiar with and have experience using the Firefox browser to participate in this study. If you do not meet these qualifications, do not accept this task as your results may be rejected. We ask that you read this form and ask any questions you may have before agreeing to be in the study. <B>Additionally, you must be at least 18 years of age to participate in this study</B>; if you are under the age of 18, please do not complete this study. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</P>";
 		}
 		else{
-			//echo "<P>Вие бяхте избран като възможен участник, защото приехте поканата ни да участвате в този изследователски проект и българския език ви е роден. Трябва да сте запознати и да имате опит в използването на браузъра Firefox, за да участвате в този проект. Ако не отговаряте на тези квалификации, не приемайте тази задача, тъй като резултатите Ви могат да бъдат отхвърлени. Молим Ви да прочетете този формуляр и да зададете всички въпроси, които имате, преди да се съгласите да участвате в проучването. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</P>";
+			//echo "<P>You were selected as a possible subject because you agreed to participate in the study and can read and understand the English language. You must be familiar with and have experience using the Firefox browser to participate in this study. If you do not meet these qualifications, do not accept this task as your results may be rejected. We ask that you read this form and ask any questions you may have before agreeing to be in the study. <B>Additionally, you must be at least 18 years of age to participate in this study</B>; if you are under the age of 18, please do not complete this study. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</P>";
 		}
-if(isset($_SESSION['valid_participant'])){
+if($_SESSION['valid_participant']){
 ?>
-		<P>Този проект получава финансиране от Националната Фондация на Науката (NSF) (САЩ), "Living in the Internet of Things"</P>
+		<P>This study is funded by the following grant: National Science Foundation(NSF), "Living in the Internet of Things"</P>
 <?php
 }
-?>
-		<H3>ЦЕЛТА НА ИЗСЛЕДВАНЕТО</H3>
-		Целта на този проект е да разбираме по-добре как хората решават дали е опасно или безопасно да влязат в разни уеб сайтове в интернет.
-		<H3>ПРОЦЕДУРИТЕ НА ИЗСЛЕДВАНЕТО</H3>
-		<strong> Този проект се състои от три задачи </strong>. Първата задача е кратък експеримент, в който тестваме волята Ви за рискове. Втората задача се състои от демографски въпроси. В експерименталната задача ще посетите няколко уеб сайта, за да определите дали са достатъчно сигурни сайтове за влизане. Накрая ще отговорите на няколко въпроса свързани с Вашият практически опит и Вашето знание за сигурността в интернет. Общото време за изпълнението на тези три задачи ще отнеме около 25-30 минути.    
-            <?php
+?> -->
+		<H3>ЦЕЛЬ НАУЧНОГО ИССЛЕДОВАНИЯ </H3>
+		Цель этого научного исследования - лучше понимать как люди решают безопасно ли входить на разные веб-сайты в Интернете.
+		<H3>ПРОЦЕДУРЫ ДЛЯ ИССЛЕДОВАНИЯ</H3>
+		Это исследование состоит из трех задач. Первое задание - очень короткий эксперимент вида “пробный шар”. Вторая задача - провести краткий эксперимент, а третья задача - провести демографический и информационный опрос. Экспериментальная задача включает посещение ряда веб-сайтов чтобы определить, достаточно ли они безопасны для входа в систему. Заключительный опрос включает ряд вопросов, касающихся Вашего практического опыта и знаний о безопасности в Интернете. Общее время выполнения этих трех задач займет примерно 25-30 минут. Вы получите 4 доллара за выполнение этих трех задач, но вы можете заработать до 5 долларов больше в зависимости от того, как быстро вы выполните экспериментальное задание. Когда ваше время на задачу увеличивается, ваш бонус будет уменьшаться.
+
+            <!-- <?php
             if($_SESSION['type'] == 'mturk'){
-            echo"Ще получите 2 долара за изпълнението на тези три задачи, но ще можете да получите до още 5 долара в зависимост от това";echo ($_SESSION['experimentConditionNumber']==0) ? "колко бързо се справите със задачата. Ако се увеличава времето за изпълнението на задача, тогава Вашият бонус се намалява." : "Ако се намалява точността на изпълнението на задача, тогава Вашият бонус се намалява.";
+            echo"You will receive $4 for completing these three tasks, but you can earn up to $5 more depending on how ";echo ($_SESSION['experimentConditionNumber']==0) ? "quickly you complete the experimental task. As your time on the task increases, your bonus will decrease." : "accurately you complete the experimental task. As your accuracy decreases, your bonus will decrease.";
             }
             else if($_SESSION['type'] == 'iu'){
-                echo"Ще получите 4 долара за изпълнението на тези три задачи, но ще можете да получите до още 5 долара в зависимост от това, "; echo ($_SESSION['experimentConditionNumber']==0) ? "колко бързо се справите със задачата. Ако се увеличава времето за изпълнението на задача, тогава Вашият бонус се намалява." : "Ако се намалява точността на изпълнението на задача, тогава Вашият бонус се намалява..";
+                echo"You will receive $2 for completing these three tasks, but you can earn up to $5 more depending on how "; echo ($_SESSION['experimentConditionNumber']==0) ? "quickly you complete the experimental task. As your time on the task increases, your bonus will decrease." : "accurately you complete the experimental task. As your accuracy decreases, your bonus will decrease.";
             }
              else if($_SESSION['type'] == 'account' && $_SESSION['valid_participant'] == 'true'){
-            echo"Ще получите 2 долара за изпълнението на тези три задачи, но ще можете да получите до още 5 долара в зависимост от това";echo ($_SESSION['experimentConditionNumber']==0) ? "колко бързо се справите със задачата. Ако се увеличава времето за изпълнението на задача, тогава Вашият бонус се намалява." : "Ако се намалява точността на изпълнението на задача, тогава Вашият бонус се намалява.";
+            echo"You will receive $2 for completing these three tasks, but you can earn up to $5 more depending on how ";echo ($_SESSION['experimentConditionNumber']==0) ? "quickly you complete the experimental task. As your time on the task increases, your bonus will decrease." : "accurately you complete the experimental task. As your accuracy decreases, your bonus will decrease.";
             }
-            ?>
+            ?> -->
 
-		<H3>КОНФИДЕНЦИАЛНОСТ</H3>
-		Ние се стараем да запазим конфиденциалността на Вашата лична информация. Вашата лична информация може да бъде разкрита само ако това се изисква от закона. Личността Ви няма да бъде разкрита в доклади, в които изследването ще се публикува.<br>
-		Информацията относно проекта ще бъде запазена в архивите на научните данни на Университета в Индиана. Информацията ще бъде достъпна само за хората, които провеждат изследването. В устни или написани доклади няма да има никакви връзки, които могат да свързват участниците с резултатите на изследването.<br>
-		Организациите, които имат право да погледнат материалите, свързани с този изследователски проект, с цел осигуряване на качеството са: главният изследовател и колегите му, Националният Научен Фонд (САЩ) и, в съответствие със закона, органите на публичната власт.<br>
+		<H3>КОНФИДЕНЦИАЛЬНОСТЬ</H3>
+		Мы стараемся сохранить конфиденциальность вашей личной информации. Однако, возможно, что Ваша личная информация будет раскрыта, если это требуется по закону. Ваша личность будет сохранена в секрете в отчетах, в которых публикуется исследование. Информация касательно исследовательского проекта будет надежно сохранена в Архивах Научных Данных в Индианском Университете и доступна только тем, кто приводит исследование.<br/> В устных или написанных отчетах не будет никаких ссылок, которые могут связать участников с результатами исследования. Организации, у которых есть право осмотреть материалы связанные с этим исследовательским проектом для обеспечения качества и анализа данных включают группы как например главный исследователь и его коллеги, Национальный научный фонд (США), Специальная комиссия учреждения индианского университета и, в соответствии с законом, органы публичной власти, в частности Управление защиты исследований человека (OHRP)(США)
 
-<?php
-if($_SESSION['type'] == 'mturk'){
-    echo "<H3>ВЪЗНАГРАЖДЕНИЕ</H3>";
-    echo"Общата сума, която Вие ще получите при изпълнението на трите задачи на този изследователски проект ще варира от 4 до 5 долара (USD). <B>Молим Ви, да обърнете внимание, защото няколко въпроса в анкетата са въпроси за потвърждение. Тези въпроси ще потвърдят качеството на Вашите отговори. Ако няма съответстващи отговори на тези въпроси, тогава Вашето заявление няма да бъде одобрено за заплащане. За да получите заплащане, искрено Ви молим да обърнете внимание на всеки въпрос..</B> Можете да се откажете от участието си по всяко време. Възнаграждението ще се одобрява след успешното изпълнение на трите части на изследователската работа.";
-}     else if($_SESSION['type'] == 'iu'){
-    echo "<H3>ВЪЗНАГРАЖДЕНИЕ</H3>";
-    echo"Общата сума, която Вие ще получите при изпълнението на трите задачи на този изследователски проект ще варира от 4 до 5 долара (USD). <B>Молим Ви, да обърнете внимание, защото няколко въпроса в анкетата са въпроси за потвърждение. Тези въпроси ще потвърдят качеството на Вашите отговори. Ако няма съответстващи отговори на тези въпроси, тогава Вашето заявление няма да бъде одобрено за заплащане. За да получите заплащане, искрено Ви молим да обърнете внимание на всеки въпрос. Можете да се откажете от участието си по всяко време. Възнаграждението ще се одобрява след успешното изпълнение на трите части на изследователската работа.</B>";
-    }
-            else if($_SESSION['type'] == 'account' && $_SESSION['valid_participant'] == 'true'){
-    echo "<H3>CВЪЗНАГРАЖДЕНИЕ</H3>";
-    echo"Общата сума, която Вие ще получите при изпълнението на трите задачи на този изследователски проект ще варира от 4 до 5 долара (USD). <B>Молим Ви, да обърнете внимание, защото няколко въпроса в анкетата са въпроси за потвърждение. Тези въпроси ще потвърдят качеството на Вашите отговори. Ако няма съответстващи отговори на тези въпроси, тогава Вашето заявление няма да бъде одобрено за заплащане. За да получите заплащане, искрено Ви молим да обърнете внимание на всеки въпрос.</B> Можете да се откажете от участието си по всяко време. Възнаграждението ще се одобрява след успешното изпълнение на трите части на изследователската работа.";
-}
-       
-?>
 <H3>КОНТАКТ</H3>
-Ако имате въпроси за тази изследователска работа, можете да се свържете с екипа по човешка и техническа безопасност на spice@indiana.edu (на английски език).
+Если у Вас есть вопросы о научном исследовании, Вы можете связываться с командой человеческой и технической безопасности на spice@indiana.edu (на английском языке) или с главным исследователем на wsmeal@iu.edu (на русском или болгарском языке). 
 
-<p>Вие също можете да се свържете с главния изследовател на wsmeal@iu.edu (на български език).</p>
 
-		<H3>УЧАСТИЕ</H3>
-<p>Вашето участие в този изследователски проект е напълно доброволно. Вие можете да се откажете от участието си по всяко време без никакви последствия. Дори да решите да участвате, Вие имате право да се откажете на всеки един етап от участието си.</p>
+		<H3> УЧАСТИЕ </H3>
+<p>Ваше участие в этом исследованием является добровольным. Вы можете отказаться от участия без санкций. Даже если Вы решите участвовать, у Вас есть право отказаться от участия в исследовании в любое время без санкций. </p>
 <br>
 <?php } ?>
 <?php if(array_key_exists($_SESSION['country'], $session_expired)){ ?>
-<center><h2><font color="red">Извиняваме се. За сега този експеримент е затворен</font></h2></center>
+<h2 style = "color:red; text-align:center;">I am sorry. The experiment is closed now</h2>
 <?php } ?>
-<?php if($_SESSION['country'] == "GB" || $_SESSION['country'] == 'UK'){ ?>
+
+<?php if($_SESSION['country'] == "BG"){ ?>
 <center><H3>STUDY INFORMATION SHEET</H3></center><p>
-<H3>INTRODUCTION</H3><P>
-		If you are interested in helping us better understand what users are
-		paying attention to when browsing the Internet, we welcome you to
-		participate in our research study. This study is being conducted by Dr. L. Jean Camp from Indiana University Bloomington, USA.
-		<P><B>Do not complete this study unless you can read and understand English and are at least 18 years old.</B></P>		
-<H3>CONTACT</H3>
-<p>If you have questions at any time about the study, you may contact The Human and Technical Security research group at spice@indiana.edu.</p>
+<H3>ПРЕДСТАВЯНЕ</H3><P>
+Ако Ви е интересно да ни помогнете да разберем по-добре на какво потребителите в интернета обръщат внимание, каним Ви да участвате в нашето изследване. Този проект се управлява от Уилиям Смийл от Университета в Индиана, САЩ.  
+		<P><B>Молим Ви да не участвате ако българският език не Ви е роден и сте на по-малко от 18 години. </B></P>
+
+		<h3>ЦЕЛТА НА ИЗСЛЕДВАНЕТО</h3>
+<p> 
+Целта на този проект е да разбираме по-добре как хората решават дали е опасно или безопасно да влязат в разни уеб сайтове в интернет. 
+</p>
+	
+<h3> ПРОЦЕДУРИТЕ НА ИЗСЛЕДВАНЕТО </h3>
+<p> Този проект се състои от три задачи. Първата задача е кратък експеримент, в който тестваме волята Ви за рискове. Втората задача се състои от демографски въпроси. В експерименталната задача ще посетите няколко уеб сайта, за да определите дали са достатъчно сигурни сайтове за влизане. Накрая ще отговорите на няколко въпроса свързани с Вашият практически опит и Вашето знание за сигурността в интернет. Общото време за изпълнението на тези три задачи ще отнеме около 25-30 минути. Ще получите 4 долара за изпълнението на тези три задачи, но ще можете да получите до още 5 долара в зависимост от това, колко бързо се справите със задачата. Ако се увеличава времето за изпълнението на задача, тогава Вашият бонус се намалява. </p>
+
+<h3>КОНФИДЕНЦИАЛНОСТ</h3>
+<p>Ние се стараем да запазим конфиденциалността на Вашата лична информация. Вашата лична информация може да бъде разкрита само ако това се изисква от закона. Личността Ви няма да бъде разкрита в доклади, в които изследването ще се публикува. Информацията относно проекта ще бъде запазена в архивите на научните данни на Университета в Индиана. Информацията ще бъде достъпна само за хората, които провеждат изследването. В устни или написани доклади няма да има никакви връзки, които могат да свързват участниците с резултатите на изследването. Организациите, които имат право да погледнат материалите, свързани с този изследователски проект, с цел осигуряване на качеството са: главният изследовател и колегите му, Националният Научен Фонд (САЩ) и, в съответствие със закона, органите на публичната власт.<br/>
+
+Организациите, които имат право да погледнат материалите, свързани с този изследователски проект, включват главният изследовател и колегите си, Национален Научен Фонд (САЩ), Специалната Комисия за Преглед (Review Board) на Университета в Индиана и в съответствие със закона органите на публичната власт, в частното Бюро за защитата на човешко изследване. (OHRP) (САЩ). 
+</p>
+	
+
+<H3>КОНТАКТ</H3>
+<p>Ако имате въпроси за тази изследователска работа, можете да се свържете с екипа по човешка и техническа безопасност на spice@indiana.edu (на английски език) или с главния изследовател на wsmeal@iu.edu (на български език)</p>
+
+<h3> УЧАСТИЕ </h3>
+<p>Вашето участие в този изследователски проект е напълно доброволно. Вие можете да се откажете от участието си по всяко време без никакви последствия. Дори да решите да участвате, Вие имате право да се откажете на всеки един етап от участието си.</p>
+
+
 <?php } ?>
 <?php if($_SESSION['country'] == "AU" | $_SESSION['country'] == "NZ"){ ?>
     <H3 ALIGN=RIGHT><I>La Trobe Ethical clearance (002/18) | Indiana University IRB Study 1707304414</I></H3></right>
 
-<center><H3>ИНФОРМАЦИЯ ЗА ПРОЕКТА</H3></center><p>
-<H3>ПРЕДСТАВЯНЕ</H3>
-<P>Ако Ви е интересно да ни помогнете да разберем по-добре на какво потребителите в интернета обръщат внимание, каним Ви да участвате в нашето изследване. Този проект се управлява от Уилиям Смийл и Яш Кумар от Университета в Индиана, САЩ.</p>
-<p><B>Молим Ви да не участвате ако българският език не Ви е роден и сте на по-малко от 18 години.</B></p>
-<!--<p>Трябва да сте запознати и да имате опит в използването на браузъра Firefox, за да участвате в този проект. Ако не отговаряте на тези квалификации, не приемайте тази задача, тъй като резултатите Ви могат да бъдат отхвърлени. WМолим Ви да прочетете този формуляр и да зададете всички въпроси, които имате, преди да се съгласите да участвате в проучването. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</p>-->
-<H3>ЦЕЛТА НА ИЗСЛЕДВАНЕТО</H3> 
-<p>Целта на този проект е да разбираме по-добре как хората решават дали е опасно или безопасно да влязат в разни уеб сайтове в интернет.</p>
-<H3>ПРОЦЕДУРИТЕ НА ИЗСЛЕДВАНЕТО</H3>
-<p>Този проект се състои от три задачи. Първата задача е кратък експеримент, в който тестваме волята Ви за рискове. Втората задача се състои от демографски въпроси. В експерименталната задача ще посетите няколко уеб сайта, за да определите дали са достатъчно сигурни сайтове за влизане. Накрая ще отговорите на няколко въпроса свързани с Вашият практически опит и Вашето знание за сигурността в интернет. Общото време за изпълнението на тези три задачи ще отнеме около 25-30 минути. Ще получите 4 долара за изпълнението на тези три задачи, но ще можете да получите до още 5 долара в зависимост от това, колко бързо се справите със задачата.</p>
-<H3>КОНФИДЕНЦИАЛНОСТ</H3>
-<p>Ние се стараем да запазим конфиденциалността на Вашата лична информация. Вашата лична информация може да бъде разкрита само ако това се изисква от закона. Личността Ви няма да бъде разкрита в доклади, в които изследването ще се публикува.
-Информацията относно проекта ще бъде запазена в архивите на научните данни на Университета в Индиана. Информацията ще бъде достъпна само за хората, които провеждат изследването. В устни или написани доклади няма да има никакви връзки, които могат да свързват участниците с резултатите на изследването.
+<center><H3>STUDY INFORMATION SHEET</H3></center><p>
+<H3>INTRODUCTION</H3>
+<P>If you are interested in helping us better understand what users are paying attention to when browsing the Internet, we welcome you to participate in our research study. This study is being conducted in Australia by Prof Paul Watters from La Trobe University and Dr Marthie Grobler from CSIRO Data61, in collaboration with Prof L. Jean Camp from Indiana University, USA, Prof Karen Renaud from Abertay University, United Kingdom, and Prof Julian Jang-Jaccard from Massey University, New Zealand.</p>
+<p><B>Do not complete this study unless you can read and understand English and are at least 18 years old.</B></p>
+<!--<p>You must be familiar with and have experience using the Firefox browser to participate in this study. If you do not meet these qualifications, do not accept this task as your results may be rejected. We ask that you read this form and ask any questions you may have before agreeing to be in the study. Before you begin, please note that the data you provide may be collected and used by Amazon as per its privacy agreement. <b>Additionally, you must be at least 18 years of age to participate in this study</b>; if you are under the age of 18, please do not complete this study. Also, please <a href='https://support.mozilla.org/en-US/kb/disable-or-remove-add-ons' target='new_window'>disable any Firefox add-ons</a> to complete the survey.</p>-->
+<H3>STUDY PURPOSE</H3> 
+<p>This study seeks to understand how people decide whether or not it is secure to sign-in to different websites on the Internet.</p>
+<H3>PROCEDURES FOR THE STUDY</H3>
+<p>This study consists of three tasks. The first task is a very brief balloon experiment. The second task is to complete a brief experiment, and the third task is to complete a demographic and informational survey. The experimental task involves visiting a series of websites and deciding whether or not they are secure enough to sign-in. The final survey involves a series of questions concerning your practical experience and knowledge about security on the Internet. The combined time for completing these three tasks will be approximately 25-30 minutes. The total payment for completing this study will range between $4 and $5 depending on your performance while completing the experimental task.</p>
+<H3>CONFIDENTIALITY</H3>
+<p>Efforts will be made to keep your personal information confidential. We cannot guarantee absolute confidentiality. Your personal information may be disclosed if required by law. Your identity will be held in confidence in reports in which the study is published.
+The information will be stored securely in the Scholarly Data Archive at Indiana University and will only be accessible to those conducting this study. There will be no references in oral or written reports that could link participants to the study.
 </p>
-<H3>КОНТАКТ</H3>
-<p>Ако имате въпроси за тази изследователска работа, можете да се свържете с екипа по човешка и техническа безопасност на spice@indiana.edu (на английски език) или с главния изследовател на wsmeal@iu.edu (на български език).</p>
-<p>Този проект беше одобрено от Университета в Индиана.</p>
-<H3>УЧАСТИЕ</H3>
-<p>Вашето участие в този изследователски проект е напълно доброволно. Вие можете да се откажете от участието си по всяко време без никакви последствия. Дори да решите да участвате, Вие имате право да се откажете на всеки един етап от участието си.</p>
+<H3>CONTACT</H3>
+<p>If you have questions at any time about the study or the procedures, you may contact the researchers Dr L Jean Camp from Indiana University (spice@indiana.edu), Prof Paul Watters from La Trobe University (P.Watters@latrobe.edu.au) and Dr Marthie Grobler from CSIRO Data61 (marthie.grobler@data61.csiro.au).</p>
+<p>This study has been approved by Indiana University Institutional Review Board, La Trobe University Human Ethics Committee and CSIRO Social Science Human Research Ethics Committee in accordance with the National Statement on Ethical Conduct in Human Research (2007). If you have any questions concerning your participation in the study please contact the researchers directly. Alternatively any concerns or complaints about the conduct of this study can be raised with La Trobe University Chair of the University Human Ethics Committee on (03) 9479 1443 |  humanethics@latrobe.edu.au, or the CSIRO Manager of Social Responsibility and Ethics on (07) 3833 5693 | csshrec@csiro.au.</p>
+<H3>PARTICIPATION</H3>
+<p>Your participation in this study is voluntary; you may decline to participate without penalty. If you decide to participate, you may withdraw from the study at any time without penalty. Your decision whether or not to participate in this study will not affect your current or future relations with Indiana University, La Trobe University or CSIRO Data61.</p>
 <?php } ?>
 
-<?php if(!$preview && !array_key_exists($_SESSION['country'], $session_expired)) :?>
-	<p>При натискането на <strong> Продължи </strong> Вие се съгласявате да участвате в това изследване.</p>
+<?php if(!$preview && !array_key_exists($_SESSION['country'], $session_expired)){
+		if($_SESSION['country'] == 'RU' || $_SESSION['country']=='UA' || $_SESSION['country']== 'BY'){
+	
+	?>
+
+	
+	<!-- <p>By clicking on the <strong> Continue to Experiment </strong> button, you agree to participate in this research.</p>
+		<BUTTON id="sisacknowledged">Continue to Experiment</BUTTON> -->
+	
+		<!---Yash Kumar --Translate to Russian-->
+		<p>RUSSIAN:Нажимая кнопку «Продолжить», вы соглашаетесь участвовать в этом исследовании.</p>
+		<BUTTON id="sisacknowledged">Продолжить</BUTTON>
+		   <?php }
+		   else { ?>
+		<!---Yash Kumar --Translate to Bulgarian-->
+		<p>Bulgarian:При натискането на «Продължи», Вие се съгласявате да участвате в това изследване
+</p>
 		<BUTTON id="sisacknowledged">Продължи</BUTTON>
-		   <?php endif;?>
+		
+		<?php 
+			} //ending else loop of line 261
+		} //ending if loop of line 248
+		?>
 
 	</DIV>
 <DIV id="error">&nbsp;</DIV>
@@ -248,7 +280,7 @@ if($_SESSION['type'] == 'mturk'){
 	<DIV id="allquestions" class="ease">&nbsp;</DIV>
 	
 	<DIV id="navigation" class="ease">&nbsp;</DIV>
-	<form id="sis_form" name="sis_form" action="PHP/dataReceiver.php" method="POST">
+	<form id="sis_form" action="PHP/dataReceiver.php" method=POST>
 	<DIV id="completedquestions">
 		<INPUT id="workerId" type="hidden" value="<?php echo $_SESSION['participant'];?>"/>&nbsp;
 		<INPUT id="experimentCondition" type="hidden" value="<?php echo $_SESSION['experimentConditionNumber'];?>"/>

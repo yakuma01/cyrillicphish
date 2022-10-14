@@ -2,19 +2,23 @@
   //check to see if they are using Firefox
 session_start();
 
-// Check if the user is logged in, if not then redirect him to login page
-// if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-//if(!(isset($_GET['typeRadios']) && ($_GET['typeRadios'] == 'iu')) 
-//  && (isset($_GET['typeRadios']) && $_GET['typeRadios'] == 'mturk') 
-//  && (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) 
-//  && !(isset($_GET['authcheck']) && $_GET['authcheck']) 
-//  && !isset($_GET['casticket'])){
-//    $type = isset($_GET['typeRadios'])?$_GET['typeRadios']:"";
-//    $tt =  isset($_GET['tt'])?$_GET['tt']:"";
-//    $country =  isset($_GET['country'])?$_GET['country']:"";
-//    header("location: login.php?country=". $country . "&typeRadios=" . $type . "&tt=" . $tt);
-//    exit;
-//}
+/*
+Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if(!(isset($_GET['typeRadios']) && ($_GET['typeRadios'] == 'iu')) 
+ && (isset($_GET['typeRadios']) && $_GET['typeRadios'] == 'mturk') 
+ && (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) 
+ && !(isset($_GET['authcheck']) && $_GET['authcheck']) 
+ && !isset($_GET['casticket'])){
+   $type = isset($_GET['typeRadios'])?$_GET['typeRadios']:"";
+   $tt =  isset($_GET['tt'])?$_GET['tt']:"";
+   $country =  isset($_GET['country'])?$_GET['country']:"";
+   header("location: login.php?country=". $country . "&typeRadios=" . $type . "&tt=" . $tt);
+   exit;
+}
+*/
+
+
 
 $agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -30,11 +34,12 @@ $group = 0;
 //if($isFirefox){
     if(isset($_GET['authcheck']) && $_GET['authcheck'] == 'true'){ //check for IU access
       if($_SESSION['valid'] == true || $_SESSION['valid'] == 1){
+    
         require_once('PHP/sisSite.php');
       } else {
         echo 'CAS Session already used. Please close and reopen Firefox browser.';
       }
-    } elseif(isset($_GET['casticket'])){ //validate cas ticket
+    } else if(isset($_GET['casticket'])){ //validate cas ticket
       $_SESSION['casticket'] = $_GET['casticket']; //Perm sets ticket, so you can only login once
       require_once('PHP/casauth.php');
     } else {
@@ -52,15 +57,18 @@ $group = 0;
 #  echo "typeRadios: ", $_POST["typeRadios"];
 #}
       if(isset($_GET['tt']) && isset($_GET['typeRadios'])  && isset($_GET['country'])){
-        $_SESSION['tt']=$_GET['tt']; //Time = 0, Accuracy = 1
+        $_SESSION['tt']=$_GET['tt']; //Time = 0, Accuracy = 1      
         $_SESSION['type']=$_GET['typeRadios']; //iu or mturk or inv
         $_SESSION['group'] = $group;
+
+        /* Code will not execute as group is not query parameter
         if(isset($_GET['group'])){
           $_SESSION['group']=$_GET['group']; // 0: no tool
                                              // 1: low risk high security
                                              // 2: medium risk
                                              // 3: high risk low security
         }
+        */
         $_SESSION['country']=$_GET['country']; // US: United States
                                                            // GB: United Kingdom (UK)
                                                            // ZA: South Africa
@@ -70,11 +78,12 @@ $group = 0;
             echo "Please make sure that you put the correct testing parameters (e.g. group should be 0, 1, 2, or 3)";
         }else{
           if($_SESSION['type'] == 'mturk' || $_SESSION['type'] == 'MTURK' ) { //mturk
-              require_once('PHP/sisSite.php');
+            
+            require_once('PHP/sisSite.php');
           }
             else if($_SESSION['type'] == 'inv') { //inv
               require_once('PHP/sisSite.php');
-          } elseif($_SESSION['type'] == 'iu' || $_SESSION['type'] == 'IU' ) {//iu
+          } else if($_SESSION['type'] == 'iu' || $_SESSION['type'] == 'IU' ) {//iu
               if($_SESSION['country'] == 'US'){
                 require_once('PHP/casauth.php');
               }else{
